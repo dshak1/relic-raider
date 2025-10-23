@@ -3,26 +3,98 @@
 *.jar
 *.war
 *.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# === Maven ===
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
 
 # === Build directories ===
 bin/
 out/
 build/
-target/
 
 # === IDE configuration ===
+
+# IntelliJ IDEA
 .idea/
 *.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
 .project
 .classpath
 .settings/
+.metadata/
+*.launch
+.factorypath
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
 .vscode/
+*.code-workspace
 
 # === System files ===
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
 
 # === Logs and temp ===
 *.log
 *.tmp
 *.swp
+*.swo
+*.bak
+*.cache
+*.temp
+
+# === Package Files ===
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# === Documentation Build Output ===
+javadoc/
+docs/api/
+
+# === Environment and Config ===
+.env
+.env.local
+.env.*.local
+config/secrets.properties
