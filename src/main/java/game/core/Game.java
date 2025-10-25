@@ -169,26 +169,37 @@ public class Game {
         rewards.remove(r);
     }
 
+    /**
+     * Determines if a reward should respawn after being collected.
+     *
+     * @param r the reward to check
+     * @return true if the reward should respawn, false otherwise
+     */
     public boolean shouldRespawn(Reward r){
         return r.isRespawnable();
     }
 
+     /** @return the current score value */
     public int getScore() {
         return score;
     }
 
+    /** @return true if the game is over */
     public boolean isGameOver() {
         return isGameOver;
     }
 
+    /** @return total time elapsed since the game started */
     public Duration getElapsedTime() {
         return elapsedTime;
     }
 
+    /** @return the current map */
     public Map getMap() {
         return map;
     }
 
+    /** @return the player instance */
     public Player getPlayer() {
         return player;
     }
