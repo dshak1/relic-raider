@@ -110,36 +110,87 @@ public class Game {
         Iterator<Reward> iterator = rewards.iterator();
         while (iterator.hasNext()){
             Reward r = iterator.next();
-            if (player.getPosition().equals(r.getPosition())){
+            if (player.getPosition().equals(r.getPosition())){ //dot rule issue, proposed solution to group
                 player.collect(r);
                 score += r.getValue();
                 r.onCollect(player);
             }
         }
+
+        for (Enemy e : enemies){
+            if (player.getPosition().equals(e.getPosition())){//another dot rule issue, haven't brought up to team yet.
+                e.onContact(player);
+            }
+        }
     }
 
+    /**
+     * Checks whether the player has satisfied all win conditions.
+     *
+     * @return true if the player reached the exit and collected all required rewards
+     */
     public boolean checkWin(){
-
+        return player.atExit(map) && (basicCollected >= basicToCollect);
     }
 
+    /**
+     * Checks whether the player has lost the game.
+     *
+     * @return true if the game is over due to defeat
+     */
     public boolean checkLose(){
-
+        return isGameOver;
     }
 
+    /**
+     * Ends the current game session, printing a summary message.
+     */
     public void end(){
-
-        
+        isGameOver = true;
+        System.out.println("Game ended. Final score: " + score);
     }
 
-    public void addReward(){
-
+    /**
+     * Adds a reward to the map.
+     *
+     * @param r the reward to add
+     */
+    public void addReward(Reward r){
+        rewards.add(r);
+        if (!r.isBonus()) basicToCollect++;
     }
 
-    public void removeReward(){
-
+    /**
+     * Removes a reward from the map.
+     *
+     * @param r the reward to remove
+     */
+    public void removeReward(Reward r){
+        rewards.remove(r);
     }
 
-    public void shouldRespawn(){
-
+    public boolean shouldRespawn(Reward r){
+        return r.isRespawnable();
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public Duration getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
 }
