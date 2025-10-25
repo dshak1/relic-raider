@@ -1,23 +1,54 @@
 package game.core;
 
 import java.time.Duration;
+import java.util.Iterator;
 import java.util.List;
 
 import game.entity.Enemy;
 import game.entity.Player;
 import game.map.Map;
 
+/**
+ * The {@code Game} class represents the main controller for gameplay.
+ * It manages the map, player, enemies, rewards, score, and win/loss state.
+ * 
+ * <p>This class encapsulates the game loop logic and collision handling
+ * between the player, enemies, and rewards.</p>
+ */
 public class Game {
+     /** Current total score accumulated by the player. */
     private int score;
+
+     /** True if the game is currently over (win or loss). */
     private boolean isGameOver;
+
+    /** Duration of time since the game started. */
     private Duration elapsedTime;
+
+    /** Total number of basic rewards that must be collected to win. */
     private int basicToCollect;
+
+    /** Number of basic rewards collected so far. */
     private int basicCollected;
+
+    /** The current game map containing tiles and positions. */
     private Map map;
+
+    /** The player character controlled by the user. */
     private Player player;
+
+    /** List of enemies active in the game. */
     private List<Enemy> enemies;
+
+    /** List of rewards placed on the map. */
     private List<Reward> rewards;
 
+    /**
+     * Constructs a new {@code Game} instance with the provided map and player.
+     *
+     * @param map    the map used in this game session
+     * @param player the player character instance
+     */
     public Game(int score, boolean isGameOver, Duration elapsedTime, int basicToCollect, int basicCollected, Map map,
             Player player, List<Enemy> enemies, List<Reward> rewards) {
         this.score = score;
@@ -31,16 +62,60 @@ public class Game {
         this.rewards = rewards;
     }
 
+    /**
+     * Starts or restarts the game, resetting timers and status flags.
+     */
     public void start() {
-        
+        System.out.println("Game Started!");
+        isGameOver=false;
+        elapsedTime=Duration.ZERO;
     }
 
-    public void tick(){
+    /**
+     * Advances the game by one logical step (or frame). 
+     * Processes player actions, collisions, and win/loss conditions.
+     *
+     * @param input optional player input or direction for this frame
+     */
+    public void tick(Direction input){
+        if(isGameOver) return;
+
+        // Process player decision and movement
+        player.decideNext(map, input);
+        player.moveTo(player.getPosition());
+
+        // Handle entity interactions
+        resolveCollisions();
+
+        // Evaluate win/lose conditions
+        if (checkWin()){
+            end();
+            System.out.println("You win!");
+        } else if (checkLose()){
+            end();
+            System.out.println("You lose!");
+        }
+
+        // Update time (roughly one frame at 60 FPS)
+        elapsedTime = elapsedTime.plusMillis(16);
 
     }
 
+    /**
+     * Handles all collision checks between player, rewards, and enemies.
+     * Updates score and state accordingly.
+     */
     public void resolveCollisions(){
-
+        //Player-Reward collisions
+        Iterator<Reward> iterator = rewards.iterator();
+        while (iterator.hasNext()){
+            Reward r = iterator.next();
+            if (player.getPosition().equals(r.getPosition())){
+                player.collect(r);
+                score += r.getValue();
+                r.onCollect(player);
+            }
+        }
     }
 
     public boolean checkWin(){
@@ -53,7 +128,7 @@ public class Game {
 
     public void end(){
 
-
+        
     }
 
     public void addReward(){
