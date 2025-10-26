@@ -29,4 +29,14 @@ public abstract class Entity {
     public void setPosition(Position p) {
       position = p;
     }
+
+    /**
+     * Checks whether this entity is currently colliding with a given entity e.
+     *
+     * @param e the entity to check collision with
+     * @return {@code true} if these entities are colliding, {@code false} otherwise
+     */
+    public boolean collidesWith(Entity e) {
+      return position.equals(e.getPosition());
+    }
 }
