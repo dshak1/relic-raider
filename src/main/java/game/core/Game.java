@@ -1,25 +1,26 @@
 package game.core;
 
+import game.entity.Enemy;
+import game.entity.Player;
+import game.map.Map;
+import game.reward.Reward;
 import java.time.Duration;
 import java.util.Iterator;
 import java.util.List;
 
-import game.entity.Enemy;
-import game.entity.Player;
-import game.map.Map;
-
 /**
  * The {@code Game} class represents the main controller for gameplay.
  * It manages the map, player, enemies, rewards, score, and win/loss state.
- * 
+ *
  * <p>This class encapsulates the game loop logic and collision handling
  * between the player, enemies, and rewards.</p>
  */
 public class Game {
-     /** Current total score accumulated by the player. */
+
+    /** Current total score accumulated by the player. */
     private int score;
 
-     /** True if the game is currently over (win or loss). */
+    /** True if the game is currently over (win or loss). */
     private boolean isGameOver;
 
     /** Duration of time since the game started. */
@@ -49,8 +50,17 @@ public class Game {
      * @param map    the map used in this game session
      * @param player the player character instance
      */
-    public Game(int score, boolean isGameOver, Duration elapsedTime, int basicToCollect, int basicCollected, Map map,
-            Player player, List<Enemy> enemies, List<Reward> rewards) {
+    public Game(
+        int score,
+        boolean isGameOver,
+        Duration elapsedTime,
+        int basicToCollect,
+        int basicCollected,
+        Map map,
+        Player player,
+        List<Enemy> enemies,
+        List<Reward> rewards
+    ) {
         this.score = score;
         this.isGameOver = isGameOver;
         this.elapsedTime = elapsedTime;
@@ -67,18 +77,18 @@ public class Game {
      */
     public void start() {
         System.out.println("Game Started!");
-        isGameOver=false;
-        elapsedTime=Duration.ZERO;
+        isGameOver = false;
+        elapsedTime = Duration.ZERO;
     }
 
     /**
-     * Advances the game by one logical step (or frame). 
+     * Advances the game by one logical step (or frame).
      * Processes player actions, collisions, and win/loss conditions.
      *
      * @param input optional player input or direction for this frame
      */
-    public void tick(Direction input){
-        if(isGameOver) return;
+    public void tick(Direction input) {
+        if (isGameOver) return;
 
         // Process player decision and movement
         player.decideNext(map, input);
@@ -88,37 +98,38 @@ public class Game {
         resolveCollisions();
 
         // Evaluate win/lose conditions
-        if (checkWin()){
+        if (checkWin()) {
             end();
             System.out.println("You win!");
-        } else if (checkLose()){
+        } else if (checkLose()) {
             end();
             System.out.println("You lose!");
         }
 
         // Update time (roughly one frame at 60 FPS)
         elapsedTime = elapsedTime.plusMillis(16);
-
     }
 
     /**
      * Handles all collision checks between player, rewards, and enemies.
      * Updates score and state accordingly.
      */
-    public void resolveCollisions(){
+    public void resolveCollisions() {
         //Player-Reward collisions
         Iterator<Reward> iterator = rewards.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Reward r = iterator.next();
-            if (player.getPosition().equals(r.getPosition())){ //dot rule issue, proposed solution to group
+            if (player.getPosition().equals(r.getPosition())) {
+                //dot rule issue, proposed solution to group
                 player.collect(r);
                 score += r.getValue();
                 r.onCollect(player);
             }
         }
 
-        for (Enemy e : enemies){
-            if (player.getPosition().equals(e.getPosition())){//another dot rule issue, haven't brought up to team yet.
+        for (Enemy e : enemies) {
+            if (player.getPosition().equals(e.getPosition())) {
+                //another dot rule issue, haven't brought up to team yet.
                 e.onContact(player);
             }
         }
@@ -129,7 +140,7 @@ public class Game {
      *
      * @return true if the player reached the exit and collected all required rewards
      */
-    public boolean checkWin(){
+    public boolean checkWin() {
         return player.atExit(map) && (basicCollected >= basicToCollect);
     }
 
@@ -138,14 +149,14 @@ public class Game {
      *
      * @return true if the game is over due to defeat
      */
-    public boolean checkLose(){
+    public boolean checkLose() {
         return isGameOver;
     }
 
     /**
      * Ends the current game session, printing a summary message.
      */
-    public void end(){
+    public void end() {
         isGameOver = true;
         System.out.println("Game ended. Final score: " + score);
     }
@@ -155,7 +166,7 @@ public class Game {
      *
      * @param r the reward to add
      */
-    public void addReward(Reward r){
+    public void addReward(Reward r) {
         rewards.add(r);
         if (!r.isBonus()) basicToCollect++;
     }
@@ -165,7 +176,7 @@ public class Game {
      *
      * @param r the reward to remove
      */
-    public void removeReward(Reward r){
+    public void removeReward(Reward r) {
         rewards.remove(r);
     }
 
@@ -175,11 +186,11 @@ public class Game {
      * @param r the reward to check
      * @return true if the reward should respawn, false otherwise
      */
-    public boolean shouldRespawn(Reward r){
+    public boolean shouldRespawn(Reward r) {
         return r.isRespawnable();
     }
 
-     /** @return the current score value */
+    /** @return the current score value */
     public int getScore() {
         return score;
     }
@@ -203,5 +214,4 @@ public class Game {
     public Player getPlayer() {
         return player;
     }
-
 }
