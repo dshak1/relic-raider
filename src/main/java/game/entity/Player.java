@@ -3,7 +3,7 @@ package game.entity;
 import game.map.Map;
 import game.map.Position;
 import game.core.Direction;
-import game.entity.Reward;
+import game.reward.Reward;
 
 /**
  * The {@code Player} class represents the user-controlled player in the game.
