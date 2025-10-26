@@ -2,7 +2,7 @@ package game.entity;
 
 import game.map.Map;
 import game.map.Position;
-import game.map.Direction;
+import game.core.Direction;
 import game.entity.Reward;
 
 /**
