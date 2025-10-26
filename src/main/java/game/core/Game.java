@@ -3,6 +3,7 @@ package game.core;
 import game.entity.Enemy;
 import game.entity.Player;
 import game.map.Map;
+import game.map.Position;
 import game.reward.Reward;
 import java.time.Duration; 
 import java.util.List;
@@ -90,8 +91,9 @@ public class Game {
         if (isGameOver) return;
 
         // Process player decision and movement
-        player.decideNext(map, input);
-        player.moveTo(player.getPosition());
+        Position nextPos = player.decideNext(map, input);
+        player.moveTo(nextPos);
+
 
         // Handle entity interactions
         resolveCollisions();
@@ -116,7 +118,6 @@ public class Game {
     public void resolveCollisions() {
         for (Reward r : rewards) {
             if (player.collidesWith(r)) {
-                //dot rule issue, proposed solution to group
                 player.collect(r);
                 score += r.getValue();
                 r.onCollect(player);
@@ -124,9 +125,8 @@ public class Game {
         }
 
         //Player-Reward collisions
-                for (Enemy e : enemies) {
+        for (Enemy e : enemies) {
             if (player.collidesWith(e)) {
-                //another dot rule issue, haven't brought up to team yet.
                 e.onContact(player);
             }
         }
