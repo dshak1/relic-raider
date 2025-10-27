@@ -56,6 +56,51 @@ public class MobileEnemy extends Enemy implements Movable {
 
         return getPosition();
     }
+
+    /**
+     * Determines the next position this enemy should move to.
+     * Implements the Movable interface.
+     * 
+     * @param map the current game map
+     * @param input the direction input (ignored for AI-controlled enemies)
+     * @return the next position to move to
+     */
+    @Override
+    public Position decideNext(Map map, Direction input) {
+        // For now, use a simple random movement since we don't have player position
+        // In a real implementation, you'd need access to the player's position
+        // This is a simplified version that just moves randomly
+        Direction[] directions = {Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
+        Direction randomDir = directions[(int) (Math.random() * directions.length)];
+        
+        int row = getPosition().getRow();
+        int col = getPosition().getCol();
+        
+        switch (randomDir) {
+            case UP:
+                row -= 1;
+                break;
+            case DOWN:
+                row += 1;
+                break;
+            case LEFT:
+                col -= 1;
+                break;
+            case RIGHT:
+                col += 1;
+                break;
+            default:
+                return getPosition();
+        }
+        
+        Position next = new Position(row, col);
+        
+        if (map.inBounds(next) && map.isPassable(next)) {
+            return next;
+        }
+        
+        return getPosition();
+    }
     
     /**
      * Moves the mobile enemy to the given position.

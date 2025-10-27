@@ -45,12 +45,10 @@ public class Game {
     private List<Reward> rewards;
 
     /**
-     * Constructs a new {@code Game} instance with the provided map and player.
-     *
-     * @param map    the map used in this game session
-     * @param player the player character instance
+     * Private constructor for Game instances.
+     * Use Game.Builder to create new instances.
      */
-    public Game(
+    private Game(
         int score,
         boolean isGameOver,
         Duration elapsedTime,
@@ -94,6 +92,14 @@ public class Game {
         Position nextPos = player.decideNext(map, input);
         player.moveTo(nextPos);
 
+        // Process enemy movement (AI-controlled)
+        for (Enemy enemy : enemies) {
+            if (enemy instanceof game.entity.Movable) {
+                game.entity.Movable movableEnemy = (game.entity.Movable) enemy;
+                Position enemyNextPos = movableEnemy.decideNext(map, null);
+                movableEnemy.moveTo(enemyNextPos);
+            }
+        }
 
         // Handle entity interactions
         resolveCollisions();
@@ -116,15 +122,21 @@ public class Game {
      * Updates score and state accordingly.
      */
     public void resolveCollisions() {
+        // Player-Reward collisions
         for (Reward r : rewards) {
-            if (player.collidesWith(r)) {
+            if (player.collidesWith(r) && !r.isCollected()) {
                 player.collect(r);
                 score += r.getValue();
                 r.onCollect(player);
+                
+                // Update basic collected counter for non-bonus rewards
+                if (!r.isBonus()) {
+                    basicCollected++;
+                }
             }
         }
 
-        //Player-Reward collisions
+        // Player-Enemy collisions
         for (Enemy e : enemies) {
             if (player.collidesWith(e)) {
                 e.onContact(player);
@@ -210,5 +222,157 @@ public class Game {
     /** @return the player instance */
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Builder class for creating Game instances with a fluent interface.
+     */
+    public static class Builder {
+        private int score = 0;
+        private boolean isGameOver = false;
+        private Duration elapsedTime = Duration.ZERO;
+        private int basicToCollect = 0;
+        private int basicCollected = 0;
+        private Map map;
+        private Player player;
+        private List<Enemy> enemies = new java.util.ArrayList<>();
+        private List<Reward> rewards = new java.util.ArrayList<>();
+
+        public Builder setMap(Map map) {
+            this.map = map;
+            return this;
+        }
+
+        public Builder setPlayer(Player player) {
+            this.player = player;
+            return this;
+        }
+
+        public Builder addEnemy(Enemy enemy) {
+            this.enemies.add(enemy);
+            return this;
+        }
+
+        public Builder addReward(Reward reward) {
+            this.rewards.add(reward);
+            if (!reward.isBonus()) {
+                this.basicToCollect++;
+            }
+            return this;
+        }
+
+        public Builder setScore(int score) {
+            this.score = score;
+            return this;
+        }
+
+        public Builder setBasicToCollect(int basicToCollect) {
+            this.basicToCollect = basicToCollect;
+            return this;
+        }
+
+        public Game build() {
+            if (map == null) {
+                throw new IllegalStateException("Map is required");
+            }
+            if (player == null) {
+                throw new IllegalStateException("Player is required");
+            }
+            return new Game(score, isGameOver, elapsedTime, basicToCollect, 
+                           basicCollected, map, player, enemies, rewards);
+        }
+    }
+
+    /**
+     * Creates a new Game instance using the builder pattern.
+     * 
+     * @return a new Game.Builder instance
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Creates a simple game with basic setup for testing.
+     * 
+     * @param mapWidth the width of the game map
+     * @param mapHeight the height of the game map
+     * @return a new Game instance with basic setup
+     */
+    public static Game createSimpleGame(int mapWidth, int mapHeight) {
+        Map map = new Map(mapWidth, mapHeight);
+        map.createBorder();
+        
+        // Set entry point (top-left corner, inside border)
+        Position entry = new Position(1, 1);
+        map.setEntryPoint(entry);
+        
+        // Set exit point (bottom-right corner, inside border)
+        Position exit = new Position(mapHeight - 2, mapWidth - 2);
+        map.setExitPoint(exit);
+        
+        Player player = new Player(entry);
+        
+        return Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .build();
+    }
+
+    /**
+     * Resets the game to its initial state.
+     * Useful for restarting without creating a new Game instance.
+     */
+    public void reset() {
+        score = 0;
+        isGameOver = false;
+        elapsedTime = Duration.ZERO;
+        basicCollected = 0;
+        
+        // Reset player position to entry point
+        if (map != null && map.getEntryPoint() != null) {
+            player.setPosition(map.getEntryPoint());
+        }
+        
+        // Reset all rewards to uncollected state
+        for (Reward reward : rewards) {
+            reward.setCollected(false);
+        }
+    }
+
+    /**
+     * Gets the number of basic rewards collected so far.
+     * 
+     * @return the number of basic rewards collected
+     */
+    public int getBasicCollected() {
+        return basicCollected;
+    }
+
+    /**
+     * Gets the total number of basic rewards that need to be collected to win.
+     * 
+     * @return the total number of basic rewards required
+     */
+    public int getBasicToCollect() {
+        return basicToCollect;
+    }
+
+    /**
+     * Gets the list of enemies in the game.
+     * 
+     * @return the list of enemies
+     */
+    public List<Enemy> getEnemies() {
+        return new java.util.ArrayList<>(enemies);
+    }
+
+    /**
+     * Gets the list of rewards in the game.
+     * 
+     * @return the list of rewards
+     */
+    public List<Reward> getRewards() {
+        return new java.util.ArrayList<>(rewards);
     }
 }
