@@ -94,8 +94,8 @@ public class Game {
 
         // Process enemy movement (AI-controlled)
         for (Enemy enemy : enemies) {
-            if (enemy instanceof game.entity.Movable) {
-                game.entity.Movable movableEnemy = (game.entity.Movable) enemy;
+            if (enemy instanceof game.behaviour.Movable) {
+                game.behaviour.Movable movableEnemy = (game.behaviour.Movable) enemy;
                 Position enemyNextPos = movableEnemy.decideNext(map, null);
                 movableEnemy.moveTo(enemyNextPos);
             }

@@ -1,4 +1,4 @@
-package game.entity;
+package game.behaviour;
 
 import game.map.Map;
 import game.map.Position;
