@@ -37,8 +37,8 @@ public class GameManager {
      * and HUD updates.
      * </p>
      * 
-     * @param game
-     * @param hud
+     * @param game the Game instance to manage
+     * @param hud the HUD to update during the game loop
      */
     public GameManager (Game game, HUD hud){
         this.game = game;
@@ -134,7 +134,7 @@ public class GameManager {
      * Resets the game state, clears HUD messages, and restarts the game loop.
      * </p>
      * 
-     * @param dir
+     * @param dir the new direction input by the player
      */
     public void setCurrentDirection(Direction dir){
         this.currentDirection = dir;
