@@ -5,7 +5,8 @@ import game.entity.Player;
 import game.map.Map;
 import game.map.Position;
 import game.reward.Reward;
-import java.time.Duration; 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,6 +70,7 @@ public class Game {
         this.enemies = enemies;
         this.rewards = rewards;
     }
+
 
     /**
      * Starts or restarts the game, resetting timers and status flags.
