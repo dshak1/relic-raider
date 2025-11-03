@@ -120,4 +120,13 @@ public class MobileEnemy extends Enemy implements Movable {
     public void onContact(Player p) {
         p.setAlive(false);
     }
+    
+    /**
+     * Gets the pathfinding strategy used by this enemy.
+     * 
+     * @return the pathfinding strategy
+     */
+    public PathfindingStrategy getPathfinder() {
+        return pathfinder;
+    }
 }
