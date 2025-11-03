@@ -93,13 +93,7 @@ public class Game {
         player.moveTo(nextPos);
 
         // Process enemy movement (AI-controlled)
-        for (Enemy enemy : enemies) {
-            if (enemy instanceof game.entity.Movable) {
-                game.entity.Movable movableEnemy = (game.entity.Movable) enemy;
-                Position enemyNextPos = movableEnemy.decideNext(map, null);
-                movableEnemy.moveTo(enemyNextPos);
-            }
-        }
+        processEnemyMovement();
 
         // Handle entity interactions
         resolveCollisions();
@@ -117,6 +111,36 @@ public class Game {
         elapsedTime = elapsedTime.plusMillis(16);
     }
 
+    /**
+     * Processes movement for all mobile enemies in the game.
+     * Uses pathfinding algorithms if available, otherwise falls back to random movement.
+     */
+    private void processEnemyMovement() {
+        for (Enemy enemy : enemies) {
+            if (enemy instanceof game.entity.Movable) {
+                game.entity.Movable movableEnemy = (game.entity.Movable) enemy;
+                Position enemyNextPos;
+                
+                // Use pathfinding if enemy is MobileEnemy with pathfinder
+                if (enemy instanceof game.entity.MobileEnemy) {
+                    game.entity.MobileEnemy mobileEnemy = (game.entity.MobileEnemy) enemy;
+                    if (mobileEnemy.getPathfinder() != null) {
+                        // Use the specific pathfinding method
+                        enemyNextPos = mobileEnemy.decideNext(map, player.getPosition());
+                    } else {
+                        // No pathfinder, use random movement
+                        enemyNextPos = movableEnemy.decideNext(map, null);
+                    }
+                } else {
+                    // Random movement for other movable enemies
+                    enemyNextPos = movableEnemy.decideNext(map, null);
+                }
+                
+                movableEnemy.moveTo(enemyNextPos);
+            }
+        }
+    }
+    
     /**
      * Handles all collision checks between player, rewards, and enemies.
      * Updates score and state accordingly.
@@ -202,6 +226,16 @@ public class Game {
     /** @return the current score value */
     public int getScore() {
         return score;
+    }
+    
+    /**
+     * Sets the current score value.
+     * Primarily used for testing and game state restoration.
+     * 
+     * @param score the new score value
+     */
+    public void setScore(int score) {
+        this.score = score;
     }
 
     /** @return true if the game is over */
