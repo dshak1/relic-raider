@@ -22,6 +22,18 @@
     </properties>
 
     <dependencies>
+        <!-- JavaFX dependencies for UI (from incoming branch) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>22.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>22.0.2</version>
+        </dependency>
+        <!-- JUnit dependency for testing (from HEAD) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -53,10 +65,20 @@
                     </archive>
                 </configuration>
             </plugin>
+            <!-- Maven Surefire plugin for running tests (from HEAD) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
+            </plugin>
+            <!-- JavaFX Maven plugin for running JavaFX application (from incoming branch) -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>game.core.GameApp</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

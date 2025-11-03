@@ -4,6 +4,7 @@ import game.map.Map;
 import game.map.Position;
 import game.core.Direction;
 import game.reward.Reward;
+import game.behaviour.Movable;
 
 /**
  * The {@code Player} class represents the user-controlled player in the game.

@@ -92,7 +92,7 @@ public class Game {
         Position nextPos = player.decideNext(map, input);
         player.moveTo(nextPos);
 
-        // Process enemy movement (AI-controlled)
+        // Process enemy movement with pathfinding integration
         processEnemyMovement();
 
         // Handle entity interactions
@@ -117,15 +117,15 @@ public class Game {
      */
     private void processEnemyMovement() {
         for (Enemy enemy : enemies) {
-            if (enemy instanceof game.entity.Movable) {
-                game.entity.Movable movableEnemy = (game.entity.Movable) enemy;
+            if (enemy instanceof game.behaviour.Movable) {
+                game.behaviour.Movable movableEnemy = (game.behaviour.Movable) enemy;
                 Position enemyNextPos;
                 
                 // Use pathfinding if enemy is MobileEnemy with pathfinder
                 if (enemy instanceof game.entity.MobileEnemy) {
                     game.entity.MobileEnemy mobileEnemy = (game.entity.MobileEnemy) enemy;
                     if (mobileEnemy.getPathfinder() != null) {
-                        // Use the specific pathfinding method
+                        // Use the specific pathfinding method with player position as target
                         enemyNextPos = mobileEnemy.decideNext(map, player.getPosition());
                     } else {
                         // No pathfinder, use random movement

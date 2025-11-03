@@ -4,6 +4,7 @@ import game.map.Map;
 import game.map.Position;
 import game.core.Direction;
 import game.behaviour.PathfindingStrategy;
+import game.behaviour.Movable;
 
 import java.util.List;
 
