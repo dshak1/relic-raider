@@ -90,7 +90,10 @@ public class GameCanvas {
     private void drawEntities(Game game) {
         // draw all of the rewards
         for (Reward reward : game.getRewards()) {
-            drawEntity(reward);
+            // Only draw rewards that haven't been collected
+            if (!reward.isCollected()) {
+                drawEntity(reward);
+            }
         }
 
         // draw all of the enemies
