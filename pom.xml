@@ -80,6 +80,15 @@
                     <mainClass>game.ui.GameApp</mainClass>
                 </configuration>
             </plugin>
+            <!-- Exec Maven plugin for running Java application -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <mainClass>game.ui.GameApp</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

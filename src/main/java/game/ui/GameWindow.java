@@ -93,11 +93,18 @@ public class GameWindow {
     public void start() {
         // Start a new game time
         timer = new AnimationTimer() {
+            private long lastTickTime = 0;
+            private final long TICK_INTERVAL_NS = 1_000_000_000L / GameConfig.GAME_TICK_RATE; // nanoseconds per tick
+            
             @Override
             public void handle(long now) {
-                // get the player's direction for each tick of the game
-                game.tick(inputController.getDirection());
-                // render the game with each tick
+                // Update game logic only at the specified tick rate
+                if (now - lastTickTime >= TICK_INTERVAL_NS) {
+                    game.tick(inputController.getDirection());
+                    lastTickTime = now;
+                }
+                
+                // Render every frame for smooth visuals
                 render();
             }
         };

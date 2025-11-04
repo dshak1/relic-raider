@@ -124,9 +124,6 @@ public class Game {
             end();
             System.out.println("You lose!");
         }
-
-        // Update time (roughly one frame at 60 FPS)
-        elapsedTime = elapsedTime.plusMillis(16);
     }
 
     /**
