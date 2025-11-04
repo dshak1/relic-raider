@@ -62,21 +62,14 @@ public class GameCanvas {
                 double x = col * tileSize;
                 double y = row * tileSize;
                 
-                // Render tile appearances - need constants in GameConfig for sprites
-                Image tileImage;
-                if (map.isBlocked(pos)) {
-                    tileImage = SpriteManager.getTileSprite("wall");
-                } else if (map.isEntry(pos)) {
-                    tileImage = SpriteManager.getTileSprite("entry");
-                } else if (map.isExit(pos)) {
-                    tileImage = SpriteManager.getTileSprite("exit");
-                } else {
-                    gc.setFill(Color.BLACK);
-                    gc.fillRect(x, y, tileSize, tileSize);
-                    continue;
-                } 
-                
-                drawTile(tileImage, x, y, tileSize);
+                String type;
+                if (map.isBlocked(pos)) type = "wall";
+                else if (map.isEntry(pos)) type = "entry";
+                else if (map.isExit(pos)) type = "exit";
+                else type = "default";
+
+                Image tile = SpriteManager.getTileSprite(type);
+                gc.drawImage(tile, x, y, tileSize, tileSize);
             }
         }
     }
@@ -102,26 +95,17 @@ public class GameCanvas {
     }
 
     /**
-     * Draws a single entity using its sprite 
+     * Draws a single entity.
      *
-     * @param entity the {@link Entity} to draw
+     * @param entity the entity to draw
      */
-    public void drawEntity(Entity e) {
-        if (e == null) return;
-
+    private void drawEntity(Entity entity) {
         int tileSize = GameConfig.TILE_SIZE;
-        double x = e.getPosition().getCol() * tileSize;
-        double y = e.getPosition().getRow() * tileSize;
+        double x = entity.getPosition().getCol() * tileSize;
+        double y = entity.getPosition().getRow() * tileSize;
 
-        // *** Add a SpriteManager class to map entity classes to their sprites (to keep logic decoupled)
-        Image sprite = SpriteManager.getSprite(e);
-        if (sprite != null) {
-            gc.drawImage(sprite, x, y, tileSize, tileSize);
-        } else {
-            // placeholder as a fallback
-            gc.setFill(Color.WHITE);
-            gc.fillRect(x, y, tileSize, tileSize);
-        }
+        Image sprite = SpriteManager.getSprite(entity);
+        gc.drawImage(sprite, x, y, tileSize, tileSize);
     }
 
     /**

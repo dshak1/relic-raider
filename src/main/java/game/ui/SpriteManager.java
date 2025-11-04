@@ -1,42 +1,87 @@
 package game.ui;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
+import game.entity.Entity;
 import game.entity.Enemy;
 import game.entity.Player;
 import game.reward.BasicReward;
 import game.reward.BonusReward;
 import javafx.scene.image.Image;
 
+/**
+ * Manages sprite images for all game entities and map tiles.
+ * <p>
+ * Provides centralized access to images for rendering in {@link game.ui.GameCanvas}.
+ * Maps entity classes to their corresponding images, and caches tile sprites for efficiency.
+ * </p>
+ * <p>
+ * Before using, {@link #initialize()} must be called once during game startup.
+ * </p>
+ */
 public class SpriteManager {
-    private static final Map<Class<?>, Image> spriteCache = new HashMap<>();
-    private static Image wall, entry, exit, defaultSprite;
 
-    public static void initialize(){
-        // Entities
-        spriteCache.put(Player.class, ResourceLoader.loadImage(GameConfig.SPRITES_PATH + "player.png"));
-        spriteCache.put(BasicReward.class, ResourceLoader.loadImage(GameConfig.SPRITES_PATH + "reward_basic.png"));
-        spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.SPRITES_PATH + "reward_bonus.png"));
-        spriteCache.put(Enemy.class, ResourceLoader.loadImage(GameConfig.SPRITES_PATH + "enemy.png"));
+    // -------------------------
+    // Cache for entity sprites
+    // -------------------------
+    private static final Map<Class<? extends Entity>, Image> spriteCache = new HashMap<>();
 
-        // Tiles
-        wall = ResourceLoader.loadImage(GameConfig.SPRITES_PATH+"tile_wall.png");
-        entry = ResourceLoader.loadImage(GameConfig.SPRITES_PATH+"tile_entry.png");
-        exit = ResourceLoader.loadImage(GameConfig.SPRITES_PATH+"tile_exit.png");
+    // -------------------------
+    // Tile images
+    // -------------------------
+    private static Image wall;
+    private static Image entry;
+    private static Image exit;
+    private static Image defaultSprite;
+
+    /**
+     * Loads and caches all entity and tile sprites.
+     * <p>
+     * Must be called once before any calls to {@link #getSprite(Entity)} or {@link #getTileSprite(String)}.
+     * </p>
+     */
+    public static void initialize() {
+        // Entity sprites
+        spriteCache.put(Player.class, ResourceLoader.loadImage(GameConfig.IMAGE_PLAYER));
+        spriteCache.put(BasicReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BASIC));
+        spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BONUS));
+        spriteCache.put(Enemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
+
+        // Tile sprites
+        wall = ResourceLoader.loadImage(GameConfig.IMAGE_WALL);
+        entry = ResourceLoader.loadImage(GameConfig.IMAGE_ENTRY);
+        exit = ResourceLoader.loadImage(GameConfig.IMAGE_EXIT);
 
         // Fallback
-        defaultSprite = ResourceLoader.loadImage(GameConfig.SPRITES_PATH+"default.png");
+        defaultSprite = ResourceLoader.loadImage(GameConfig.IMAGE_DEFAULT);
     }
 
-    public static Image getSprite(Object entity){
+    /**
+     * Returns the sprite image for the given entity.
+     * <p>
+     * If no specific sprite exists for the entity class, returns the default sprite.
+     * </p>
+     *
+     * @param entity the entity to retrieve a sprite for
+     * @return the corresponding {@link Image}, or default if none exists
+     */
+    public static Image getSprite(Entity entity) {
         if (entity == null) return defaultSprite;
         return spriteCache.getOrDefault(entity.getClass(), defaultSprite);
     }
 
-    public static Image getTileSprite(String type){
-        return switch (type){
+    /**
+     * Returns the tile sprite for the given type string.
+     * <p>
+     * Supports "wall", "entry", "exit". Any other string returns the default sprite.
+     * </p>
+     *
+     * @param type the type of tile ("wall", "entry", "exit")
+     * @return the corresponding {@link Image}, or default if unknown
+     */
+    public static Image getTileSprite(String type) {
+        return switch (type) {
             case "wall" -> wall;
             case "entry" -> entry;
             case "exit" -> exit;
