@@ -1,17 +1,15 @@
 package game.ui;
 
+import game.core.Game;
+import game.entity.Enemy;
+import game.entity.Entity;
+import game.map.Map;
+import game.map.Position;
+import game.reward.Reward;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import game.core.Game;
-import game.entity.Entity;
-import game.entity.Player;
-import game.entity.Enemy;
-import game.reward.Reward;
-import game.map.Map;
-import game.map.Position;
-import game.ui.HUD;
 
 /**
  * The {@code GameCanvas} class is responsible for rendering the game; it draws the map, 
@@ -54,14 +52,17 @@ public class GameCanvas {
      * @param map the {@link Map} to render
      */
     private void drawMap(Map map) {
-        int tileSize = GameConfig.TILE_SIZE;
+        // Calculate tile size to fit the canvas, keeping tiles square
+        double tileWidth = canvas.getWidth() / map.getWidth();
+        double tileHeight = canvas.getHeight() / map.getHeight();
+        double tileSize = Math.min(tileWidth, tileHeight);
 
         for (int row = 0; row < map.getHeight(); row++) {
             for (int col = 0; col < map.getWidth(); col++) {
                 Position pos = new Position(row, col);
                 double x = col * tileSize;
                 double y = row * tileSize;
-                
+
                 String type;
                 if (map.isBlocked(pos)) type = "wall";
                 else if (map.isEntry(pos)) type = "entry";
@@ -73,6 +74,16 @@ public class GameCanvas {
             }
         }
     }
+
+    /**
+     * Returns the underlying JavaFX {@link Canvas} used for drawing.
+     *
+     * @return the canvas
+     */
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
 
     /**
      * Draws all active entities in the game (rewards, enemies, player).
@@ -100,13 +111,17 @@ public class GameCanvas {
      * @param entity the entity to draw
      */
     private void drawEntity(Entity entity) {
-        int tileSize = GameConfig.TILE_SIZE;
-        double x = entity.getPosition().getCol() * tileSize;
-        double y = entity.getPosition().getRow() * tileSize;
+        Map map = game.getMap();
+        double tileWidth = canvas.getWidth() / map.getWidth();
+        double tileHeight = canvas.getHeight() / map.getHeight();
+
+        double x = entity.getPosition().getCol() * tileWidth;
+        double y = entity.getPosition().getRow() * tileHeight;
 
         Image sprite = SpriteManager.getSprite(entity);
-        gc.drawImage(sprite, x, y, tileSize, tileSize);
+        gc.drawImage(sprite, x, y, tileWidth, tileHeight);
     }
+
 
     /**
      * Helper method to draw an image tile at a given coordinate

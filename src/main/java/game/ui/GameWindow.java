@@ -45,13 +45,28 @@ public class GameWindow {
         StackPane root = new StackPane(); // for layering elements in a back-to-front stack
         Scene scene = new Scene(root); 
 
+        root.getChildren().add(canvas.getCanvas()); // ensure the Canvas is in the scene
+
+        canvas.getCanvas().widthProperty().bind(root.widthProperty());
+        canvas.getCanvas().heightProperty().bind(root.heightProperty());
+
+
+
+        // Make canvas resize with the window
+        root.widthProperty().addListener((obs, oldVal, newVal) -> {
+            canvas.getCanvas().setWidth(newVal.doubleValue());
+        });
+        root.heightProperty().addListener((obs, oldVal, newVal) -> {
+            canvas.getCanvas().setHeight(newVal.doubleValue());
+        });
+
         // Set up keyboard input handling
         scene.setOnKeyPressed(this::handleKeyInput);
         scene.setOnKeyReleased(this::handleKeyInput);
 
         stage.setTitle(GameConfig.GAME_TITLE);
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setResizable(true);
         // more to add -- drawing game canvas?
     }
 
