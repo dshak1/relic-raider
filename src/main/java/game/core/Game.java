@@ -49,7 +49,7 @@ public class Game {
      * Private constructor for Game instances.
      * Use Game.Builder to create new instances.
      */
-    private Game(
+    public Game(
         int score,
         boolean isGameOver,
         Duration elapsedTime,

@@ -67,7 +67,7 @@ public class GameCanvas {
                 if (map.isBlocked(pos)) type = "wall";
                 else if (map.isEntry(pos)) type = "entry";
                 else if (map.isExit(pos)) type = "exit";
-                else type = "default";
+                else type = "floor";
 
                 Image tile = SpriteManager.getTileSprite(type);
                 gc.drawImage(tile, x, y, tileSize, tileSize);

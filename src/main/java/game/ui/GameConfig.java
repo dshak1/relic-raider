@@ -175,31 +175,38 @@ public class GameConfig {
     /**
      * Directory path for sprite images.
      */
-    public static final String SPRITES_PATH = ASSETS_PATH + "sprites/";
+    public static final String SPRITES_PATH = "/assets/sprites/";
 
     /** Path to the player sprite image. */
-    public static final String IMAGE_PLAYER = SPRITES_PATH + "player.png";
+    public static final String IMAGE_PLAYER = "player.png";
 
     /** Path to the enemy sprite image. */
-    public static final String IMAGE_ENEMY = SPRITES_PATH + "enemy.png";
+    public static final String IMAGE_ENEMY = "enemy.png";
 
     /** Path to the basic reward (coin) sprite image. */
-    public static final String IMAGE_REWARD_BASIC = SPRITES_PATH + "reward_basic.png";
+    public static final String IMAGE_REWARD_BASIC = "reward_basic.png";
 
     /** Path to the bonus reward (totem) sprite image. */
-    public static final String IMAGE_REWARD_BONUS = SPRITES_PATH + "reward_bonus.png";
+    public static final String IMAGE_REWARD_BONUS = "reward_bonus.png";
 
     /** Path to the wall tile sprite image. */
-    public static final String IMAGE_WALL = SPRITES_PATH + "tile_wall.png";
+    public static final String IMAGE_WALL = "tile_wall.png";
 
     /** Path to the entry tile sprite image (level start). */
-    public static final String IMAGE_ENTRY = SPRITES_PATH + "tile_entry.png";
+    public static final String IMAGE_ENTRY = "tile_entry.png";
 
     /** Path to the exit tile sprite image (level goal). */
-    public static final String IMAGE_EXIT = SPRITES_PATH + "tile_exit.png";
+    public static final String IMAGE_EXIT = "tile_exit.png";
 
     /** Path to the default placeholder sprite image, used when no other sprite is available. */
-    public static final String IMAGE_DEFAULT = SPRITES_PATH + "default.png";
+    public static final String IMAGE_DEFAULT = "default.png";
+
+    /** Path to the floor tile sprite image */
+    public static final String IMAGE_FLOOR = "tile_floor.png";
+
+    /** Path to the final reward sprite (earned after reaching exit). */
+    public static final String IMAGE_REWARD_FINAL = "reward_final.png";
+
     
     /**
      * Directory path for fonts.

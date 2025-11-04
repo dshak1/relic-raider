@@ -2,6 +2,8 @@ package game.ui;
 
 import game.ui.GameConfig; //needed to get file paths later.
 import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import javafx.scene.image.Image;
@@ -36,12 +38,15 @@ public class ResourceLoader {
      * @param fileName the image file name (e.g., "player.png")
      * @return the loaded Image object
      */
-    public static Image loadImage(String fileName){
+    public static Image loadImage(String fileName) {
         return imageCache.computeIfAbsent(fileName, name -> {
             String path = GameConfig.SPRITES_PATH + name;
-            return new Image(path);
+            // Use getResourceAsStream for classpath resource
+            return new Image(ResourceLoader.class.getResourceAsStream(path));
         });
     }
+
+
 
     /**
      * Returns a cached image if it exists, otherwise null.

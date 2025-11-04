@@ -8,6 +8,7 @@ import game.entity.Enemy;
 import game.entity.Player;
 import game.reward.BasicReward;
 import game.reward.BonusReward;
+import game.reward.Reward;
 import javafx.scene.image.Image;
 
 /**
@@ -33,6 +34,7 @@ public class SpriteManager {
     private static Image wall;
     private static Image entry;
     private static Image exit;
+    private static Image floor;
     private static Image defaultSprite;
 
     /**
@@ -47,9 +49,12 @@ public class SpriteManager {
         spriteCache.put(BasicReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BASIC));
         spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BONUS));
         spriteCache.put(Enemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
+        spriteCache.put(Reward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
+
 
         // Tile sprites
         wall = ResourceLoader.loadImage(GameConfig.IMAGE_WALL);
+        floor = ResourceLoader.loadImage(GameConfig.IMAGE_FLOOR);
         entry = ResourceLoader.loadImage(GameConfig.IMAGE_ENTRY);
         exit = ResourceLoader.loadImage(GameConfig.IMAGE_EXIT);
 
@@ -81,10 +86,11 @@ public class SpriteManager {
      * @return the corresponding {@link Image}, or default if unknown
      */
     public static Image getTileSprite(String type) {
-        return switch (type) {
+        return switch (type.toLowerCase()) {
             case "wall" -> wall;
             case "entry" -> entry;
             case "exit" -> exit;
+            case "floor", "default" -> floor; // treats default as the floor as well, can be changed later
             default -> defaultSprite;
         };
     }

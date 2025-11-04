@@ -20,6 +20,7 @@ public class GameWindow {
     private final GameCanvas canvas;
     private final InputController inputController;
     private AnimationTimer timer;
+    private Scene scene;
 
     /**
      * Constructs a new {@code GameWindow} with the given stage and game instance
@@ -43,7 +44,7 @@ public class GameWindow {
      */
     private void setupScene(GameCanvas canvas) {
         StackPane root = new StackPane();
-        Scene scene = new Scene(root);
+        scene = new Scene(root); // store in field
 
         root.getChildren().add(canvas.getCanvas());
 
@@ -59,6 +60,11 @@ public class GameWindow {
         stage.setScene(scene);
         stage.setResizable(true);
     }
+
+    public Scene getScene() {
+        return scene;
+    }
+
 
 
     /**
