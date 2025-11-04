@@ -202,16 +202,6 @@ public class GameConfig {
     public static final String IMAGE_DEFAULT = SPRITES_PATH + "default.png";
     
     /**
-     * Directory path for map/level files.
-     */
-    public static final String MAPS_PATH = ASSETS_PATH + "maps/";
-    
-    /**
-     * Directory path for sound effects.
-     */
-    public static final String SOUNDS_PATH = ASSETS_PATH + "sounds/";
-    
-    /**
      * Directory path for fonts.
      */
     public static final String FONTS_PATH = ASSETS_PATH + "fonts/";
