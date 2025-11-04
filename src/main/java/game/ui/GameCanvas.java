@@ -63,17 +63,20 @@ public class GameCanvas {
                 double y = row * tileSize;
                 
                 // Render tile appearances - need constants in GameConfig for sprites
+                Image tileImage;
                 if (map.isBlocked(pos)) {
-                    drawTile(ResourceLoader.loadImage(GameConfig.IMAGE_WALL), x, y, tileSize);
+                    tileImage = SpriteManager.getTileSprite("wall");
                 } else if (map.isEntry(pos)) {
-                    drawTile(ResourceLoader.loadImage(GameConfig.IMAGE_ENTRY), x, y, tileSize);
+                    tileImage = SpriteManager.getTileSprite("entry");
                 } else if (map.isExit(pos)) {
-                    drawTile(ResourceLoader.loadImage(GameConfig.IMAGE_EXIT), x, y, tileSize);
+                    tileImage = SpriteManager.getTileSprite("exit");
                 } else {
                     gc.setFill(Color.BLACK);
                     gc.fillRect(x, y, tileSize, tileSize);
+                    continue;
                 } 
                 
+                drawTile(tileImage, x, y, tileSize);
             }
         }
     }
@@ -104,6 +107,8 @@ public class GameCanvas {
      * @param entity the {@link Entity} to draw
      */
     public void drawEntity(Entity e) {
+        if (e == null) return;
+
         int tileSize = GameConfig.TILE_SIZE;
         double x = e.getPosition().getCol() * tileSize;
         double y = e.getPosition().getRow() * tileSize;

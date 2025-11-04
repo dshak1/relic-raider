@@ -176,6 +176,30 @@ public class GameConfig {
      * Directory path for sprite images.
      */
     public static final String SPRITES_PATH = ASSETS_PATH + "sprites/";
+
+    /** Path to the player sprite image. */
+    public static final String IMAGE_PLAYER = SPRITES_PATH + "player.png";
+
+    /** Path to the enemy sprite image. */
+    public static final String IMAGE_ENEMY = SPRITES_PATH + "enemy.png";
+
+    /** Path to the basic reward (coin) sprite image. */
+    public static final String IMAGE_REWARD_BASIC = SPRITES_PATH + "reward_basic.png";
+
+    /** Path to the bonus reward (totem) sprite image. */
+    public static final String IMAGE_REWARD_BONUS = SPRITES_PATH + "reward_bonus.png";
+
+    /** Path to the wall tile sprite image. */
+    public static final String IMAGE_WALL = SPRITES_PATH + "tile_wall.png";
+
+    /** Path to the entry tile sprite image (level start). */
+    public static final String IMAGE_ENTRY = SPRITES_PATH + "tile_entry.png";
+
+    /** Path to the exit tile sprite image (level goal). */
+    public static final String IMAGE_EXIT = SPRITES_PATH + "tile_exit.png";
+
+    /** Path to the default placeholder sprite image, used when no other sprite is available. */
+    public static final String IMAGE_DEFAULT = SPRITES_PATH + "default.png";
     
     /**
      * Directory path for map/level files.
