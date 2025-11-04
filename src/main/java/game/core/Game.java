@@ -1,5 +1,6 @@
 package game.core;
 
+import game.behaviour.PathfindingStrategy;
 import game.entity.Enemy;
 import game.entity.Player;
 import game.map.Map;
@@ -356,20 +357,146 @@ public class Game {
         Map map = new Map(mapWidth, mapHeight);
         map.createBorder();
         
-        // Set entry point (top-left corner, inside border)
-        Position entry = new Position(1, 1);
+        // Set entry point (left side, inside border)
+        Position entry = new Position(mapHeight - 3, 2);
         map.setEntryPoint(entry);
         
-        // Set exit point (bottom-right corner, inside border)
-        Position exit = new Position(mapHeight - 2, mapWidth - 2);
+        // Set exit point (right side, inside border)
+        Position exit = new Position(3, mapWidth - 3);
         map.setExitPoint(exit);
+        
+        // Add some simple internal walls for maze structure
+        // Vertical wall in left area
+        for (int row = 5; row < 15; row++) {
+            Position wallPos = new Position(row, 10);
+            if (map.inBounds(wallPos)) {
+                map.getTile(wallPos).setBlocked(true);
+            }
+        }
+        
+        // Vertical wall in right area
+        for (int row = 10; row < 25; row++) {
+            Position wallPos = new Position(row, 30);
+            if (map.inBounds(wallPos)) {
+                map.getTile(wallPos).setBlocked(true);
+            }
+        }
+        
+        // Horizontal wall in middle
+        for (int col = 15; col < 25; col++) {
+            Position wallPos = new Position(15, col);
+            if (map.inBounds(wallPos)) {
+                map.getTile(wallPos).setBlocked(true);
+            }
+        }
+        
+        // Small room structure in center
+        for (int col = 18; col < 23; col++) {
+            if (col != 20) { // Leave opening
+                Position wallPos = new Position(10, col);
+                if (map.inBounds(wallPos)) {
+                    map.getTile(wallPos).setBlocked(true);
+                }
+            }
+        }
         
         Player player = new Player(entry);
         
-        return Game.builder()
+        Game.Builder builder = Game.builder()
             .setMap(map)
-            .setPlayer(player)
-            .build();
+            .setPlayer(player);
+        
+        // Add mobile enemies with A* pathfinding
+        PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
+        
+        // Add 4 mobile enemies in safe positions
+        builder.addEnemy(new game.entity.MobileEnemy(
+            "skeleton1", 
+            100,
+            new Position(8, 5),
+            pathfinder
+        ));
+        
+        builder.addEnemy(new game.entity.MobileEnemy(
+            "skeleton2",
+            100,
+            new Position(20, 15),
+            pathfinder
+        ));
+        
+        builder.addEnemy(new game.entity.MobileEnemy(
+            "boulder1",
+            100,
+            new Position(12, 25),
+            pathfinder
+        ));
+        
+        builder.addEnemy(new game.entity.MobileEnemy(
+            "skeleton3",
+            100,
+            new Position(5, 35),
+            pathfinder
+        ));
+        
+        // Add stationary enemies (spike traps)
+        builder.addEnemy(new game.entity.StationaryEnemy(
+            "spike1",
+            game.ui.GameConfig.SPIKE_TRAP_PENALTY,
+            new Position(15, 8)
+        ));
+        
+        builder.addEnemy(new game.entity.StationaryEnemy(
+            "spike2",
+            game.ui.GameConfig.SPIKE_TRAP_PENALTY,
+            new Position(10, 28)
+        ));
+        
+        builder.addEnemy(new game.entity.StationaryEnemy(
+            "spike3",
+            game.ui.GameConfig.SPIKE_TRAP_PENALTY,
+            new Position(18, 12)
+        ));
+        
+        // Add basic rewards (must collect all to win)
+        builder.addReward(new game.reward.BasicReward(
+            new Position(5, 5),
+            game.ui.GameConfig.REGULAR_REWARD_VALUE
+        ));
+        
+        builder.addReward(new game.reward.BasicReward(
+            new Position(10, 15),
+            game.ui.GameConfig.REGULAR_REWARD_VALUE
+        ));
+        
+        builder.addReward(new game.reward.BasicReward(
+            new Position(20, 20),
+            game.ui.GameConfig.REGULAR_REWARD_VALUE
+        ));
+        
+        builder.addReward(new game.reward.BasicReward(
+            new Position(25, 10),
+            game.ui.GameConfig.REGULAR_REWARD_VALUE
+        ));
+        
+        builder.addReward(new game.reward.BasicReward(
+            new Position(8, 35),
+            game.ui.GameConfig.REGULAR_REWARD_VALUE
+        ));
+        
+        // Add bonus rewards (optional, high value)
+        builder.addReward(new game.reward.BonusReward(
+            new Position(12, 20),
+            game.ui.GameConfig.BONUS_REWARD_VALUE,
+            null
+        ));
+        
+        builder.addReward(new game.reward.BonusReward(
+            new Position(22, 28),
+            game.ui.GameConfig.BONUS_REWARD_VALUE,
+            null
+        ));
+        
+        return builder.build();
     }
 
     /**
