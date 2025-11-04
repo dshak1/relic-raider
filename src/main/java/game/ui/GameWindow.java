@@ -42,33 +42,24 @@ public class GameWindow {
      * Initializes the JavaFX scene and sets up the key input listeners
      */
     private void setupScene(GameCanvas canvas) {
-        StackPane root = new StackPane(); // for layering elements in a back-to-front stack
-        Scene scene = new Scene(root); 
+        StackPane root = new StackPane();
+        Scene scene = new Scene(root);
 
-        root.getChildren().add(canvas.getCanvas()); // ensure the Canvas is in the scene
+        root.getChildren().add(canvas.getCanvas());
 
+        // Bind canvas size to root size (resizable)
         canvas.getCanvas().widthProperty().bind(root.widthProperty());
         canvas.getCanvas().heightProperty().bind(root.heightProperty());
 
-
-
-        // Make canvas resize with the window
-        root.widthProperty().addListener((obs, oldVal, newVal) -> {
-            canvas.getCanvas().setWidth(newVal.doubleValue());
-        });
-        root.heightProperty().addListener((obs, oldVal, newVal) -> {
-            canvas.getCanvas().setHeight(newVal.doubleValue());
-        });
-
-        // Set up keyboard input handling
+        // Keyboard input
         scene.setOnKeyPressed(this::handleKeyInput);
         scene.setOnKeyReleased(this::handleKeyInput);
 
         stage.setTitle(GameConfig.GAME_TITLE);
         stage.setScene(scene);
         stage.setResizable(true);
-        // more to add -- drawing game canvas?
     }
+
 
     /**
      * Starts the rendering and updates the time loop using an {@link AnimationTimer}.
