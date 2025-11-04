@@ -19,7 +19,6 @@ public class GameCanvas {
     private final Canvas canvas;
     private final GraphicsContext gc;
     private final Game game;
-    private final HUD hud;
 
     /**
      * Constructs a new {@code GameCanvas} with the given JavaFX canvas
@@ -31,7 +30,6 @@ public class GameCanvas {
         this.game = game;
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
-        this.hud = new HUD(this.game);
     }
 
     /**
@@ -43,7 +41,6 @@ public class GameCanvas {
         clear();
         drawMap(game.getMap());
         drawEntities(game);
-        drawHUD(game);
     }
 
     /**
@@ -53,15 +50,15 @@ public class GameCanvas {
      */
     private void drawMap(Map map) {
         // Calculate tile size to fit the canvas, keeping tiles square
-        double tileWidth = canvas.getWidth() / map.getWidth();
-        double tileHeight = canvas.getHeight() / map.getHeight();
-        double tileSize = Math.min(tileWidth, tileHeight);
+        double tileSize = Math.min(canvas.getWidth() / map.getWidth(), canvas.getHeight() / map.getHeight());
+        double offsetX = (canvas.getWidth() - (tileSize * map.getWidth())) / 2;
+        double offsetY = (canvas.getHeight() - (tileSize * map.getHeight())) / 2;
 
         for (int row = 0; row < map.getHeight(); row++) {
             for (int col = 0; col < map.getWidth(); col++) {
                 Position pos = new Position(row, col);
-                double x = col * tileSize;
-                double y = row * tileSize;
+                double x = offsetX + col * tileSize;
+                double y = offsetY + row * tileSize;
 
                 String type;
                 if (map.isBlocked(pos)) type = "wall";
@@ -111,17 +108,17 @@ public class GameCanvas {
      * @param entity the entity to draw
      */
     private void drawEntity(Entity entity) {
-        Map map = game.getMap();
-        double tileWidth = canvas.getWidth() / map.getWidth();
-        double tileHeight = canvas.getHeight() / map.getHeight();
+        Map map = game.getMap();  // <-- add this
+        double tileSize = Math.min(canvas.getWidth() / map.getWidth(), canvas.getHeight() / map.getHeight());
+        double offsetX = (canvas.getWidth() - (tileSize * map.getWidth())) / 2;
+        double offsetY = (canvas.getHeight() - (tileSize * map.getHeight())) / 2;
 
-        double x = entity.getPosition().getCol() * tileWidth;
-        double y = entity.getPosition().getRow() * tileHeight;
+        double x = offsetX + entity.getPosition().getCol() * tileSize;
+        double y = offsetY + entity.getPosition().getRow() * tileSize;
 
         Image sprite = SpriteManager.getSprite(entity);
-        gc.drawImage(sprite, x, y, tileWidth, tileHeight);
+        gc.drawImage(sprite, x, y, tileSize, tileSize);
     }
-
 
     /**
      * Helper method to draw an image tile at a given coordinate
@@ -134,17 +131,6 @@ public class GameCanvas {
             gc.setFill(Color.WHITE);
             gc.fillRect(x, y, tileSize, tileSize);
         }
-    }
-
-    /**
-     * Draws the HUD overlay (score, timer)
-     *
-     * @param game the current {@link Game} instance
-     */
-    public void drawHUD(Game game) {
-        // update the HUD (score & time)
-        hud.update();
-        hud.showMessage(game.isGameOver() ? "Game Over" : "");
     }
 
     /**

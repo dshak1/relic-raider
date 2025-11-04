@@ -34,6 +34,7 @@ public class GameApp extends Application {
 
         Game game = Game.createSimpleGame(GameConfig.BOARD_WIDTH_TILES, GameConfig.BOARD_HEIGHT_TILES);
         HUD hud = new HUD(game);
+        game.setHUD(hud);
         GameManager gameManager = new GameManager(game, hud);
         GameWindow window = new GameWindow(primaryStage, game);
 

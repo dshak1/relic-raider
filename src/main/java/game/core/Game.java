@@ -5,6 +5,8 @@ import game.entity.Player;
 import game.map.Map;
 import game.map.Position;
 import game.reward.Reward;
+import game.ui.HUD;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,10 @@ public class Game {
 
     /** List of rewards placed on the map. */
     private List<Reward> rewards;
+
+    private HUD hud;
+
+    private long lastUpdateMillis = System.currentTimeMillis();
 
     /**
      * Private constructor for Game instances.
@@ -88,6 +94,11 @@ public class Game {
      * @param input optional player input or direction for this frame
      */
     public void tick(Direction input) {
+        long now = System.currentTimeMillis();
+        long delta = now - lastUpdateMillis;
+        lastUpdateMillis = now;
+        elapsedTime = elapsedTime.plusMillis(delta);
+        
         if (isGameOver) return;
 
         // Process player decision and movement
@@ -100,10 +111,15 @@ public class Game {
         // Handle entity interactions
         resolveCollisions();
 
+        if (hud != null) {
+            hud.update();
+        }
+
         // Evaluate win/lose conditions
         if (checkWin()) {
             end();
             System.out.println("You win!");
+            hud.showMessage("You Win! Score: " + score + ", Time: " + elapsedTime.toSeconds() + "s");
         } else if (checkLose()) {
             end();
             System.out.println("You lose!");
@@ -258,6 +274,10 @@ public class Game {
     /** @return the player instance */
     public Player getPlayer() {
         return player;
+    }
+
+    public void setHUD(HUD hud) {
+        this.hud = hud;
     }
 
     /**
