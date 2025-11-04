@@ -14,7 +14,7 @@ public class GameApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         // 1. Initialize all sprites
-        SpriteManager.initialize();
+        //SpriteManager.initialize();
 
         // 2. Build the game state (map, player, enemies, rewards)
         Game game = Game.createSimpleGame(GameConfig.BOARD_WIDTH_TILES, GameConfig.BOARD_HEIGHT_TILES);
