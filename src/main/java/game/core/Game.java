@@ -136,28 +136,38 @@ public class Game {
      * Processes movement for all mobile enemies in the game.
      * Uses pathfinding algorithms if available, otherwise falls back to random movement.
      */
+    private int enemyMovementTicks = 0;
+    private static final int ENEMY_MOVEMENT_DELAY = 7; // Move every 
+    
     private void processEnemyMovement() {
-        for (Enemy enemy : enemies) {
-            if (enemy instanceof game.behaviour.Movable) {
-                game.behaviour.Movable movableEnemy = (game.behaviour.Movable) enemy;
-                Position enemyNextPos;
-                
-                // Use pathfinding if enemy is MobileEnemy with pathfinder
-                if (enemy instanceof game.entity.MobileEnemy) {
-                    game.entity.MobileEnemy mobileEnemy = (game.entity.MobileEnemy) enemy;
-                    if (mobileEnemy.getPathfinder() != null) {
-                        // Use the specific pathfinding method with player position as target
-                        enemyNextPos = mobileEnemy.decideNext(map, player.getPosition());
+        enemyMovementTicks++;
+        
+        // Only move enemies every ENEMY_MOVEMENT_DELAY ticks
+        if (enemyMovementTicks >= ENEMY_MOVEMENT_DELAY) {
+            enemyMovementTicks = 0; // Reset counter
+            
+            for (Enemy enemy : enemies) {
+                if (enemy instanceof game.behaviour.Movable) {
+                    game.behaviour.Movable movableEnemy = (game.behaviour.Movable) enemy;
+                    Position enemyNextPos;
+                    
+                    // Use pathfinding if enemy is MobileEnemy with pathfinder
+                    if (enemy instanceof game.entity.MobileEnemy) {
+                        game.entity.MobileEnemy mobileEnemy = (game.entity.MobileEnemy) enemy;
+                        if (mobileEnemy.getPathfinder() != null) {
+                            // Use the specific pathfinding method with player position as target
+                            enemyNextPos = mobileEnemy.decideNext(map, player.getPosition());
+                        } else {
+                            // No pathfinder, use random movement
+                            enemyNextPos = movableEnemy.decideNext(map, null);
+                        }
                     } else {
-                        // No pathfinder, use random movement
+                        // Random movement for other movable enemies
                         enemyNextPos = movableEnemy.decideNext(map, null);
                     }
-                } else {
-                    // Random movement for other movable enemies
-                    enemyNextPos = movableEnemy.decideNext(map, null);
+                    
+                    movableEnemy.moveTo(enemyNextPos);
                 }
-                
-                movableEnemy.moveTo(enemyNextPos);
             }
         }
     }
@@ -438,15 +448,38 @@ public class Game {
             .setMap(map)
             .setPlayer(player);
         
-        // Add mobile enemies with A* pathfinding
+        // Add mobile enemies that chase the player using A* pathfinding strategy
         PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
+        Position startPoint = map.getEntryPoint();
+        final int MIN_DISTANCE_FROM_PLAYER = 15;  // Minimum Manhattan distance from player start, 
+        // so that it doesn't spawn too close to where the player starts
         
-        /*builder.addEnemy(new game.entity.MobileEnemy(
-            "skeleton1", 
-            100,
-            new Position(25, 30),
-            pathfinder
-        ));*/
+        // Add three enemies at random positions
+        for (int i = 1; i <= 3; i++) {
+            Position enemyPos;
+            do {
+                // Generate random position within the map bounds (avoiding borders)
+                int row = 2 + (int)(Math.random() * (mapHeight - 4));
+                int col = 2 + (int)(Math.random() * (mapWidth - 4));
+                enemyPos = new Position(row, col);
+                
+                // Calculate Manhattan distance from player start
+                int distance = Math.abs(enemyPos.getRow() - startPoint.getRow()) + 
+                             Math.abs(enemyPos.getCol() - startPoint.getCol());
+                             
+                // Check if position is valid (passable and far enough from player)
+                if (map.isPassable(enemyPos) && distance >= MIN_DISTANCE_FROM_PLAYER) {
+                    break;
+                }
+            } while (true);
+            
+            builder.addEnemy(new game.entity.MobileEnemy(
+                "mobile_enemy_" + i,
+                Integer.MAX_VALUE, // instant defeat on contact
+                enemyPos,
+                pathfinder
+            ));
+        }
         
         builder.addEnemy(new game.entity.StationaryEnemy(
             "spike1",
@@ -454,18 +487,28 @@ public class Game {
             new Position(20, 1)
         ));
         
-        builder.addReward(new game.reward.BasicReward(
-            new Position(20, 2),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
-        builder.addReward(new game.reward.BasicReward(
-            new Position(20, 3),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
-        builder.addReward(new game.reward.BasicReward(
-            new Position(20, 4),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
+        // Spawn 10 gems (basic rewards) at random valid positions
+        int gemsSpawned = 0;
+        while (gemsSpawned < 10) {
+            int row = 2 + (int)(Math.random() * (mapHeight - 4));
+            int col = 2 + (int)(Math.random() * (mapWidth - 4));
+            Position gemPos = new Position(row, col);
+            // Don't spawn on entry, exit, or blocked tiles, or duplicate positions
+            boolean isDuplicate = false;
+            if (!map.isPassable(gemPos) || map.isEntry(gemPos) || map.isExit(gemPos)) continue;
+            for (Reward r : builder.rewards) {
+                if (r.getPosition().equals(gemPos)) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if (isDuplicate) continue;
+            builder.addReward(new game.reward.BasicReward(
+                gemPos,
+                game.ui.GameConfig.REGULAR_REWARD_VALUE
+            ));
+            gemsSpawned++;
+        }
         
         // Add bonus rewards (optional, high value)
         builder.addReward(new game.reward.BonusReward(
