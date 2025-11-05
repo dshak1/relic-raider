@@ -19,12 +19,25 @@ import game.core.Game;
  * operations to the {@link GameCanvas}.
  */
 public class GameWindow {
+    /** The main Stage for the game window */
     private final Stage stage;
+
+    /** Reference to the game being displayed */
     private final Game game;
+
+    /** Canvas used to render the game */
     private final GameCanvas canvas;
+
+    /** Handles player input */
     private final InputController inputController;
+
+    /** AnimationTimer for driving the game loop */
     private AnimationTimer timer;
+
+    /** Scene containing the game canvas */
     private Scene scene;
+
+    /** HUD associated with the game */
     private final HUD hud;
 
 
@@ -79,13 +92,14 @@ public class GameWindow {
         scene.setOnKeyReleased(this::handleKeyInput);
     }
 
-
-
+    /**
+     * Returns the JavaFX {@link Scene} of the game window.
+     * 
+     * @return the current game {@link Scene}
+     */
     public Scene getScene() {
         return scene;
     }
-
-
 
     /**
      * Starts the rendering and updates the time loop using an {@link AnimationTimer}.

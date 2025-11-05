@@ -29,6 +29,12 @@ public class GameManager {
 
     /** the JavaFX AnimationTimer that drives the game loop. */
     private AnimationTimer gameLoop;
+
+    /** Callback invoked when the player wins */
+    private Runnable onWin;
+    
+    /** Callback invoked when the player loses */
+    private Runnable onLose;
     
     /**
      * Constructs a new GameManager for the specified game and HUD.
@@ -80,12 +86,15 @@ public class GameManager {
         game.tick(currentDirection);
 
         game.resolveCollisions();
-        if (game.checkWin()){
+
+        if (game.checkWin()) {
+            pauseGame();
             hud.showMessage("You Win!");
+            if (onWin != null) onWin.run(); // <-- UI handles showing WinScreen
+        } else if (game.checkLose()) {
             pauseGame();
-        } else if (game.checkLose()){
             hud.showMessage("You Lose!");
-            pauseGame();
+            if (onLose != null) onLose.run(); // <-- UI handles showing LoseScreen
         }
 
         hud.update();
@@ -138,5 +147,23 @@ public class GameManager {
      */
     public void setCurrentDirection(Direction dir){
         this.currentDirection = dir;
+    }
+
+    /**
+     * Sets the callback to execute when the player loses.
+     * 
+     * @param callback a {@link Runnable} invoked on a loss
+     */
+    public void setOnWin(Runnable callback) {
+        this.onWin = callback;
+    }
+
+    /**
+     * Sets the callback to execute when the player loses.
+     * 
+     * @param callback a {@link Runnable} invoked on a loss
+     */
+    public void setOnLose(Runnable callback) {
+        this.onLose = callback;
     }
 }

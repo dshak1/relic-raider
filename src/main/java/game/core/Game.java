@@ -12,6 +12,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.ui.GameEndScreen;
+
 /**
  * The {@code Game} class represents the main controller for gameplay.
  * It manages the map, player, enemies, rewards, score, and win/loss state.
@@ -48,8 +50,10 @@ public class Game {
     /** List of rewards placed on the map. */
     private List<Reward> rewards;
 
+    /** The game's HUD used to display score, time, and other info */
     private HUD hud;
 
+    /** Timestamp of the last update in milliseconds */
     private long lastUpdateMillis = System.currentTimeMillis();
 
     /** Timestamp in milliseconds when the player last took damage from a spike. */
@@ -122,12 +126,10 @@ public class Game {
         // Evaluate win/lose conditions
         if (checkWin()) {
             end();
-            System.out.println("You win!");
-            hud.showMessage("You Win! Score: " + score + ", Time: " + elapsedTime.toSeconds() + "s");
         } else if (checkLose()) {
             end();
-            System.out.println("You lose!");
         }
+
     }
 
     /**
@@ -299,6 +301,11 @@ public class Game {
         return player;
     }
 
+    /**
+     * Sets the {@link HUD} instance for the game.
+     * 
+     * @param hud the {@link HUD} to display during gameplay
+     */
     public void setHUD(HUD hud) {
         this.hud = hud;
     }

@@ -251,14 +251,14 @@ public class HowToPlayScreen extends VBox {
         backButton.setPrefHeight(40);
         
         // Style the entire screen
-        this.setStyle("-fx-background-color: #2C2C2C; -fx-text-fill: #FFFFFF;");
+        this.setStyle("-fx-background-color: #2C2C2C; -fx-text-fill: #8d8d8dff;");
         
         // Style text sections for better readability
-        controlsText.setStyle("-fx-fill: #FFFFFF;");
-        objectivesText.setStyle("-fx-fill: #FFFFFF;");
-        enemiesText.setStyle("-fx-fill: #FFFFFF;");
-        rewardsText.setStyle("-fx-fill: #FFFFFF;");
-        titleText.setStyle("-fx-fill: #FFD35A;"); // Gold color for title
+        controlsText.setStyle("-fx-fill: #c09624ff;");
+        objectivesText.setStyle("-fx-fill: #c09624ff;");
+        enemiesText.setStyle("-fx-fill: #c09624ff;");
+        rewardsText.setStyle("-fx-fill: #c09624ff;");
+        titleText.setStyle("-fx-fill: #c09624ff;"); // Gold color for title
     }
     
     /**
