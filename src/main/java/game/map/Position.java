@@ -94,6 +94,14 @@ public class Position {
         return row == position.row && col == position.col;
     }
 
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + row;
+        result = 31 * result + col;
+        return result;
+    }
+
     /**
      * Returns a string representation of this position.
      *
