@@ -480,18 +480,28 @@ public class Game {
             new Position(20, 1)
         ));
         
-        builder.addReward(new game.reward.BasicReward(
-            new Position(20, 2),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
-        builder.addReward(new game.reward.BasicReward(
-            new Position(20, 3),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
-        builder.addReward(new game.reward.BasicReward(
-            new Position(20, 4),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
+        // Spawn 10 gems (basic rewards) at random valid positions
+        int gemsSpawned = 0;
+        while (gemsSpawned < 10) {
+            int row = 2 + (int)(Math.random() * (mapHeight - 4));
+            int col = 2 + (int)(Math.random() * (mapWidth - 4));
+            Position gemPos = new Position(row, col);
+            // Don't spawn on entry, exit, or blocked tiles, or duplicate positions
+            boolean isDuplicate = false;
+            if (!map.isPassable(gemPos) || map.isEntry(gemPos) || map.isExit(gemPos)) continue;
+            for (Reward r : builder.rewards) {
+                if (r.getPosition().equals(gemPos)) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if (isDuplicate) continue;
+            builder.addReward(new game.reward.BasicReward(
+                gemPos,
+                game.ui.GameConfig.REGULAR_REWARD_VALUE
+            ));
+            gemsSpawned++;
+        }
         
         // Add bonus rewards (optional, high value)
         builder.addReward(new game.reward.BonusReward(
