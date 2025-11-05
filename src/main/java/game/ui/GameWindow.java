@@ -40,6 +40,12 @@ public class GameWindow {
     /** HUD associated with the game */
     private final HUD hud;
 
+    /** Debug mode for map setup - shows full map and pauses game logic */
+    private boolean setupMode = false;
+
+    /** Reference to game manager for coordinating setup mode */
+    private GameManager gameManager;
+
 
     /**
      * Constructs a new {@code GameWindow} with the given stage and game instance
@@ -58,6 +64,15 @@ public class GameWindow {
         Canvas canvasfx = new Canvas(GameConfig.TILE_SIZE * game.getMap().getWidth(), GameConfig.TILE_SIZE * game.getMap().getHeight());
         this.canvas = new GameCanvas(game, canvasfx);
         setupScene(canvas);
+    }
+
+    /**
+     * Sets the game manager reference for setup mode coordination.
+     * 
+     * @param gameManager the game manager to coordinate with
+     */
+    public void setGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
     }
 
     /**
@@ -112,14 +127,14 @@ public class GameWindow {
             
             @Override
             public void handle(long now) {
-                // Update game logic only at the specified tick rate
-                if (now - lastTickTime >= TICK_INTERVAL_NS) {
+                // Update game logic only at the specified tick rate and when not in setup mode
+                if (!setupMode && now - lastTickTime >= TICK_INTERVAL_NS) {
                     game.tick(inputController.getDirection());
                     lastTickTime = now;
                 }
                 
                 // Render every frame for smooth visuals
-                render();
+                canvas.draw(game, setupMode);
             }
         };
         timer.start();
@@ -144,12 +159,28 @@ public class GameWindow {
      */
     public void handleKeyInput(KeyEvent event) {
         inputController.handleKeyPress(event);
+        
+        // Toggle setup mode with 'M' key
+        if (event.getEventType() == KeyEvent.KEY_PRESSED && 
+            event.getCode() == javafx.scene.input.KeyCode.M) {
+            setupMode = !setupMode;
+            System.out.println("Setup Mode: " + (setupMode ? "ON" : "OFF"));
+            
+            // Pause/resume game manager to freeze enemies
+            if (gameManager != null) {
+                if (setupMode) {
+                    gameManager.pauseGame();
+                } else {
+                    gameManager.resumeGame();
+                }
+            }
+        }
     }
 
     /**
      * Renders the current game state using the {@link GameCanvas}.
      */
     public void render() {
-        canvas.draw(game);
+        canvas.draw(game, setupMode);
     }
 }

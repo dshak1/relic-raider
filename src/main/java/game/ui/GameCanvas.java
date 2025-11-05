@@ -37,10 +37,10 @@ public class GameCanvas {
      *
      * @param game the current {@link Game} instance 
      */
-    public void draw(Game game) {
+    public void draw(Game game, boolean setupMode) {
         clear();
-        drawMap(game.getMap());
-        drawEntities(game);
+        drawMap(game.getMap(), setupMode);
+        drawEntities(game, setupMode);
     }
 
     /**
@@ -48,41 +48,61 @@ public class GameCanvas {
      *
      * @param map the {@link Map} to render
      */
-    private void drawMap(Map map) {
-        // Define the viewport size (number of tiles visible)
-        final int VIEWPORT_WIDTH = 15;  // Visible tiles horizontally
-        final int VIEWPORT_HEIGHT = 11; // Visible tiles vertically
-        
-        // Calculate tile size based on viewport
-        double tileSize = Math.min(canvas.getWidth() / VIEWPORT_WIDTH, canvas.getHeight() / VIEWPORT_HEIGHT);
-        
-        // Get player position for centering the viewport
-        Position playerPos = game.getPlayer().getPosition();
-        
-        // Calculate viewport boundaries
-        int startRow = Math.max(0, playerPos.getRow() - VIEWPORT_HEIGHT/2);
-        int endRow = Math.min(map.getHeight(), startRow + VIEWPORT_HEIGHT);
-        int startCol = Math.max(0, playerPos.getCol() - VIEWPORT_WIDTH/2);
-        int endCol = Math.min(map.getWidth(), startCol + VIEWPORT_WIDTH);
-        
-        // Adjust offset to center the viewport
-        double offsetX = (canvas.getWidth() - (tileSize * VIEWPORT_WIDTH)) / 2;
-        double offsetY = (canvas.getHeight() - (tileSize * VIEWPORT_HEIGHT)) / 2;
-        
-        for (int row = startRow; row < endRow; row++) {
-            for (int col = startCol; col < endCol; col++) {
-                Position pos = new Position(row, col);
-                double x = offsetX + (col - startCol) * tileSize;
-                double y = offsetY + (row - startRow) * tileSize;
-
-                String type;
-                if (map.isBlocked(pos)) type = "wall";
-                else if (map.isEntry(pos)) type = "entry";
-                else if (map.isExit(pos)) type = "exit";
-                else type = "floor";
-
-                Image tile = SpriteManager.getTileSprite(type);
-                gc.drawImage(tile, x, y, tileSize, tileSize);
+    private void drawMap(Map map, boolean setupMode) {
+        if (setupMode) {
+            // Setup mode: show entire map
+            double tileSize = Math.min(canvas.getWidth() / map.getWidth(), 
+                                       canvas.getHeight() / map.getHeight());
+            
+            for (int row = 0; row < map.getHeight(); row++) {
+                for (int col = 0; col < map.getWidth(); col++) {
+                    Position pos = new Position(row, col);
+                    double x = col * tileSize;
+                    double y = row * tileSize;
+    
+                    String type;
+                    if (map.isBlocked(pos)) type = "wall";
+                    else if (map.isEntry(pos)) type = "entry";
+                    else if (map.isExit(pos)) type = "exit";
+                    else type = "floor";
+    
+                    Image tile = SpriteManager.getTileSprite(type);
+                    gc.drawImage(tile, x, y, tileSize, tileSize);
+                }
+            }
+        } else {
+            // Normal mode: viewport centered on player (existing code)
+            final int VIEWPORT_WIDTH = 15;
+            final int VIEWPORT_HEIGHT = 11;
+            
+            double tileSize = Math.min(canvas.getWidth() / VIEWPORT_WIDTH, 
+                                       canvas.getHeight() / VIEWPORT_HEIGHT);
+            
+            Position playerPos = game.getPlayer().getPosition();
+            
+            int startRow = Math.max(0, playerPos.getRow() - VIEWPORT_HEIGHT/2);
+            int endRow = Math.min(map.getHeight(), startRow + VIEWPORT_HEIGHT);
+            int startCol = Math.max(0, playerPos.getCol() - VIEWPORT_WIDTH/2);
+            int endCol = Math.min(map.getWidth(), startCol + VIEWPORT_WIDTH);
+            
+            double offsetX = (canvas.getWidth() - (tileSize * VIEWPORT_WIDTH)) / 2;
+            double offsetY = (canvas.getHeight() - (tileSize * VIEWPORT_HEIGHT)) / 2;
+            
+            for (int row = startRow; row < endRow; row++) {
+                for (int col = startCol; col < endCol; col++) {
+                    Position pos = new Position(row, col);
+                    double x = offsetX + (col - startCol) * tileSize;
+                    double y = offsetY + (row - startRow) * tileSize;
+    
+                    String type;
+                    if (map.isBlocked(pos)) type = "wall";
+                    else if (map.isEntry(pos)) type = "entry";
+                    else if (map.isExit(pos)) type = "exit";
+                    else type = "floor";
+    
+                    Image tile = SpriteManager.getTileSprite(type);
+                    gc.drawImage(tile, x, y, tileSize, tileSize);
+                }
             }
         }
     }
@@ -102,22 +122,18 @@ public class GameCanvas {
      *
      * @param game the current {@link Game} instance 
      */
-    private void drawEntities(Game game) {
-        // draw all of the rewards
+    private void drawEntities(Game game, boolean setupMode) {
         for (Reward reward : game.getRewards()) {
-            // Only draw rewards that haven't been collected
             if (!reward.isCollected()) {
-                drawEntity(reward);
+                drawEntity(reward, setupMode);
             }
         }
-
-        // draw all of the enemies
+    
         for (Enemy enemy : game.getEnemies()) {
-            drawEntity(enemy);
+            drawEntity(enemy, setupMode);
         }
-
-        // draw the player
-        drawEntity(game.getPlayer()); 
+    
+        drawEntity(game.getPlayer(), setupMode);
     }
 
     /**
@@ -125,25 +141,37 @@ public class GameCanvas {
      *
      * @param entity the entity to draw
      */
-    private void drawEntity(Entity entity) {
+    private void drawEntity(Entity entity, boolean setupMode) {
         Map map = game.getMap();
-        final int VIEWPORT_WIDTH = 15;
-        final int VIEWPORT_HEIGHT = 11;
         
-        double tileSize = Math.min(canvas.getWidth() / VIEWPORT_WIDTH, canvas.getHeight() / VIEWPORT_HEIGHT);
-        Position playerPos = game.getPlayer().getPosition();
+        double tileSize;
+        double x, y;
         
-        // Calculate viewport boundaries
-        int startRow = Math.max(0, playerPos.getRow() - VIEWPORT_HEIGHT/2);
-        int startCol = Math.max(0, playerPos.getCol() - VIEWPORT_WIDTH/2);
-        
-        // Calculate entity position relative to viewport
-        double offsetX = (canvas.getWidth() - (tileSize * VIEWPORT_WIDTH)) / 2;
-        double offsetY = (canvas.getHeight() - (tileSize * VIEWPORT_HEIGHT)) / 2;
-        
-        double x = offsetX + (entity.getPosition().getCol() - startCol) * tileSize;
-        double y = offsetY + (entity.getPosition().getRow() - startRow) * tileSize;
-
+        if (setupMode) {
+            // Setup mode: use full map coordinates
+            tileSize = Math.min(canvas.getWidth() / map.getWidth(), 
+                               canvas.getHeight() / map.getHeight());
+            x = entity.getPosition().getCol() * tileSize;
+            y = entity.getPosition().getRow() * tileSize;
+        } else {
+            // Normal mode: use viewport coordinates (existing code)
+            final int VIEWPORT_WIDTH = 15;
+            final int VIEWPORT_HEIGHT = 11;
+            
+            tileSize = Math.min(canvas.getWidth() / VIEWPORT_WIDTH, 
+                               canvas.getHeight() / VIEWPORT_HEIGHT);
+            Position playerPos = game.getPlayer().getPosition();
+            
+            int startRow = Math.max(0, playerPos.getRow() - VIEWPORT_HEIGHT/2);
+            int startCol = Math.max(0, playerPos.getCol() - VIEWPORT_WIDTH/2);
+            
+            double offsetX = (canvas.getWidth() - (tileSize * VIEWPORT_WIDTH)) / 2;
+            double offsetY = (canvas.getHeight() - (tileSize * VIEWPORT_HEIGHT)) / 2;
+            
+            x = offsetX + (entity.getPosition().getCol() - startCol) * tileSize;
+            y = offsetY + (entity.getPosition().getRow() - startRow) * tileSize;
+        }
+    
         Image sprite = SpriteManager.getSprite(entity);
         gc.drawImage(sprite, x, y, tileSize, tileSize);
     }

@@ -42,18 +42,20 @@ public class GameApp extends Application {
      */
     private void startGame(Stage primaryStage) {
         SpriteManager.initialize();
-
+    
         Game game = Game.createSimpleGame(GameConfig.BOARD_WIDTH_TILES, GameConfig.BOARD_HEIGHT_TILES);
         HUD hud = new HUD(game);
         game.setHUD(hud);
         GameManager gameManager = new GameManager(game, hud);
         GameWindow window = new GameWindow(primaryStage, game);
         
-
+        // Link window and manager for setup mode coordination
+        window.setGameManager(gameManager);
+    
         // Switch to the game scene
         primaryStage.setScene(window.getScene());
         primaryStage.show();
-
+    
         gameManager.setOnWin(() -> {
             WinScreen winScreen = new WinScreen();
             winScreen.showScore(game.getScore(), game.getElapsedTime().toSeconds());
@@ -62,10 +64,10 @@ public class GameApp extends Application {
             popup.show();
             winScreen.setOnBack(() -> {
                 popup.close();
-                showMainMenu(primaryStage); // a method to show MenuScreen again
+                showMainMenu(primaryStage);
             });
         });
-
+    
         gameManager.setOnLose(() -> {
             LoseScreen loseScreen = new LoseScreen();
             loseScreen.showScore(game.getScore(), game.getElapsedTime().toSeconds());
@@ -77,7 +79,7 @@ public class GameApp extends Application {
                 showMainMenu(primaryStage);
             });
         });
-
+    
         gameManager.startGame();
         window.start();
     }
