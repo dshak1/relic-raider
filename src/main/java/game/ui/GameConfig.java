@@ -160,6 +160,13 @@ public class GameConfig {
      * Based on Phase 1 spec: "If the player's score becomes negative, the player loses"
      */
     public static final int MIN_SCORE_THRESHOLD = 0;
+
+    /**
+     * Cooldown duration in milliseconds after taking spike damage.
+     * Player cannot take damage from spikes again until this time has passed.
+     * This prevents rapid score drain when standing on spikes.
+     */
+    public static final long DAMAGE_COOLDOWN_MS = 1000; // 1 second
     
     
     // ========================

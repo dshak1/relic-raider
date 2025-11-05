@@ -52,6 +52,9 @@ public class Game {
 
     private long lastUpdateMillis = System.currentTimeMillis();
 
+    /** Timestamp in milliseconds when the player last took damage from a spike. */
+    private long lastDamageTime = 0;
+
     /**
      * Private constructor for Game instances.
      * Use Game.Builder to create new instances.
@@ -163,10 +166,16 @@ public class Game {
      */
     public void resolveCollisions() {
         // Player-Reward collisions
+        System.out.println("Player position: " + player.getPosition());
+        System.out.println("Number of rewards: " + rewards.size());
+        
         for (Reward r : rewards) {
+            System.out.println("Reward position: " + r.getPosition() + ", collected: " + r.isCollected());
             if (player.collidesWith(r) && !r.isCollected()) {
+                System.out.println("COLLISION DETECTED WITH REWARD!");
                 player.collect(r);
                 score += r.getValue();
+                System.out.println("New score: " + score);
                 r.onCollect(player);
                 
                 // Update basic collected counter for non-bonus rewards
@@ -175,11 +184,27 @@ public class Game {
                 }
             }
         }
-
+    
         // Player-Enemy collisions
         for (Enemy e : enemies) {
             if (player.collidesWith(e)) {
                 e.onContact(player);
+                
+                // Handle stationary enemy damage with cooldown
+                if (e instanceof game.entity.StationaryEnemy) {
+                    long currentTime = System.currentTimeMillis();
+                    long timeSinceLastDamage = currentTime - lastDamageTime;
+                    
+                    // Only apply damage if cooldown has expired
+                    if (timeSinceLastDamage >= game.ui.GameConfig.DAMAGE_COOLDOWN_MS) {
+                        score -= e.getDamage();
+                        lastDamageTime = currentTime;
+                        
+                        if (score < 0) {
+                            isGameOver = true;
+                        }
+                    }
+                }
             }
         }
     }
@@ -199,7 +224,7 @@ public class Game {
      * @return true if the game is over due to defeat
      */
     public boolean checkLose() {
-        return isGameOver;
+        return isGameOver || !player.isAlive();
     }
 
     /**
@@ -409,89 +434,35 @@ public class Game {
         // Add mobile enemies with A* pathfinding
         PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
         
-        // Add 4 mobile enemies in safe positions
-        builder.addEnemy(new game.entity.MobileEnemy(
+        /*builder.addEnemy(new game.entity.MobileEnemy(
             "skeleton1", 
             100,
-            new Position(8, 5),
+            new Position(25, 30),
             pathfinder
-        ));
+        ));*/
         
-        builder.addEnemy(new game.entity.MobileEnemy(
-            "skeleton2",
-            100,
-            new Position(20, 15),
-            pathfinder
-        ));
-        
-        builder.addEnemy(new game.entity.MobileEnemy(
-            "boulder1",
-            100,
-            new Position(12, 25),
-            pathfinder
-        ));
-        
-        builder.addEnemy(new game.entity.MobileEnemy(
-            "skeleton3",
-            100,
-            new Position(5, 35),
-            pathfinder
-        ));
-        
-        // Add stationary enemies (spike traps)
         builder.addEnemy(new game.entity.StationaryEnemy(
             "spike1",
             game.ui.GameConfig.SPIKE_TRAP_PENALTY,
-            new Position(15, 8)
+            new Position(20, 1)
         ));
         
-        builder.addEnemy(new game.entity.StationaryEnemy(
-            "spike2",
-            game.ui.GameConfig.SPIKE_TRAP_PENALTY,
-            new Position(10, 28)
-        ));
-        
-        builder.addEnemy(new game.entity.StationaryEnemy(
-            "spike3",
-            game.ui.GameConfig.SPIKE_TRAP_PENALTY,
-            new Position(18, 12)
-        ));
-        
-        // Add basic rewards (must collect all to win)
         builder.addReward(new game.reward.BasicReward(
-            new Position(5, 5),
+            new Position(20, 2),
             game.ui.GameConfig.REGULAR_REWARD_VALUE
         ));
-        
         builder.addReward(new game.reward.BasicReward(
-            new Position(10, 15),
+            new Position(20, 3),
             game.ui.GameConfig.REGULAR_REWARD_VALUE
         ));
-        
         builder.addReward(new game.reward.BasicReward(
-            new Position(20, 20),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
-        
-        builder.addReward(new game.reward.BasicReward(
-            new Position(25, 10),
-            game.ui.GameConfig.REGULAR_REWARD_VALUE
-        ));
-        
-        builder.addReward(new game.reward.BasicReward(
-            new Position(8, 35),
+            new Position(20, 4),
             game.ui.GameConfig.REGULAR_REWARD_VALUE
         ));
         
         // Add bonus rewards (optional, high value)
         builder.addReward(new game.reward.BonusReward(
             new Position(12, 20),
-            game.ui.GameConfig.BONUS_REWARD_VALUE,
-            null
-        ));
-        
-        builder.addReward(new game.reward.BonusReward(
-            new Position(22, 28),
             game.ui.GameConfig.BONUS_REWARD_VALUE,
             null
         ));
@@ -508,6 +479,7 @@ public class Game {
         isGameOver = false;
         elapsedTime = Duration.ZERO;
         basicCollected = 0;
+        lastDamageTime = 0;
         
         // Reset player position to entry point
         if (map != null && map.getEntryPoint() != null) {
