@@ -49,6 +49,16 @@ public class WinScreen extends VBox {
     }
 
     /**
+     * Sets the final score displayed on the screen.
+     * Uses a default time of 0 seconds.
+     * 
+     * @param score the player's final score
+     */
+    public void setFinalScore(int score) {
+        showScore(score, 0);
+    }
+
+    /**
      * Sets the callback to be invoked when the Back button is clicked.
      * 
      * @param callback a {@link Runnable} to execute when Back is pressed

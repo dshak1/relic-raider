@@ -241,35 +241,29 @@ public class HowToPlayScreen extends VBox {
      * </p>
      */
     private void styleComponents() {
-        // Title
+        // Style title text with larger, bold font
         titleText.setFont(Font.font("System", FontWeight.BOLD, 28));
-        titleText.setStyle("-fx-fill: #ffcc33;"); // bright golden title
         
-        // Section text (body)
-        String bodyColor = "#f1d36b"; // soft gold for readability
-        controlsText.setStyle("-fx-fill: " + bodyColor + ";");
-        objectivesText.setStyle("-fx-fill: " + bodyColor + ";");
-        enemiesText.setStyle("-fx-fill: " + bodyColor + ";");
-        rewardsText.setStyle("-fx-fill: " + bodyColor + ";");
-        
-        // Back button styling
-        backButton.setFont(Font.font(16));
+        // Style back button - updated to match other screens
+        Font buttonFont = Font.font("System", FontWeight.BOLD, 18);
+        backButton.setFont(buttonFont);
         backButton.setPrefWidth(200);
-        backButton.setPrefHeight(40);
-        backButton.setStyle(
-            "-fx-background-color: #c9a66b;" + // muted gold button
-            "-fx-text-fill: #37373aff;" +       // dark text for contrast
-            "-fx-background-radius: 10;"
-        );
+        backButton.setPrefHeight(45);
+        backButton.setStyle("-fx-background-color: #2a2a3e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FFD700; -fx-border-width: 2; -fx-border-radius: 5;");
         
-        // Overall screen background
-        this.setStyle("-fx-background-color: #532c11ff;"); // deep dark background
+        // Hover effect
+        backButton.setOnMouseEntered(e -> backButton.setStyle("-fx-background-color: #3a3a4e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FFD700; -fx-border-width: 2; -fx-border-radius: 5;"));
+        backButton.setOnMouseExited(e -> backButton.setStyle("-fx-background-color: #2a2a3e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FFD700; -fx-border-width: 2; -fx-border-radius: 5;"));
         
-        // ScrollPane background
-        contentScrollPane.setStyle(
-            "-fx-background: #37373aff;" + 
-            "-fx-background-color: #37373aff;"
-        );
+        // Style the entire screen - updated colors to match other screens
+        this.setStyle("-fx-background-color: #1a1a2e; -fx-text-fill: #FFFFFF;");
+        
+        // Style text sections for better readability
+        controlsText.setStyle("-fx-fill: #E0E0E0;");
+        objectivesText.setStyle("-fx-fill: #E0E0E0;");
+        enemiesText.setStyle("-fx-fill: #E0E0E0;");
+        rewardsText.setStyle("-fx-fill: #E0E0E0;");
+        titleText.setStyle("-fx-fill: #FFD700; -fx-effect: dropshadow(three-pass-box, rgba(255,215,0,0.6), 8, 0, 0, 0);"); // Gold color for title
     }
     
     /**

@@ -208,6 +208,9 @@ public class GameConfig {
     /** Path to the exit tile sprite image (level goal). */
     public static final String IMAGE_EXIT = "tile_exit.png";
 
+    /** Path to the door sprite image (locked exit). */
+    public static final String IMAGE_DOOR = "door.png";
+
     /** Path to the default placeholder sprite image, used when no other sprite is available. */
     public static final String IMAGE_DEFAULT = "default.png";
 

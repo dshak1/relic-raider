@@ -28,6 +28,16 @@ public class LoseScreen extends VBox {
         messageText.setText("You Lose!\nScore: " + score + "\nTime: " + timeSeconds + "s");
     }
 
+    /**
+     * Sets the final score displayed on the screen.
+     * Uses a default time of 0 seconds.
+     * 
+     * @param score the player's final score
+     */
+    public void setFinalScore(int score) {
+        showScore(score, 0);
+    }
+
     public void setOnBack(Runnable callback) {
         backButton.setOnAction(e -> callback.run());
     }

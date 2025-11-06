@@ -49,6 +49,9 @@ public class GameCanvas {
      * @param map the {@link Map} to render
      */
     private void drawMap(Map map, boolean setupMode) {
+        // Check if exit is unlocked (all basic rewards collected)
+        boolean exitUnlocked = game.getBasicCollected() >= game.getBasicToCollect();
+        
         if (setupMode) {
             // Setup mode: show entire map
             double tileSize = Math.min(canvas.getWidth() / map.getWidth(), 
@@ -61,10 +64,21 @@ public class GameCanvas {
                     double y = row * tileSize;
     
                     String type;
-                    if (map.isBlocked(pos)) type = "wall";
-                    else if (map.isEntry(pos)) type = "entry";
-                    else if (map.isExit(pos)) type = "exit";
-                    else type = "floor";
+                    if (map.isBlocked(pos)) {
+                        type = "wall";
+                    } else if (map.isEntry(pos)) {
+                        type = "entry";
+                    } else if (map.isExit(pos)) {
+                        // If exit is unlocked, show floor instead of door
+                        // Otherwise show door sprite
+                        if (exitUnlocked) {
+                            type = "floor";
+                        } else {
+                            type = "door"; // Use door sprite when locked
+                        }
+                    } else {
+                        type = "floor";
+                    }
     
                     Image tile = SpriteManager.getTileSprite(type);
                     gc.drawImage(tile, x, y, tileSize, tileSize);
@@ -95,10 +109,21 @@ public class GameCanvas {
                     double y = offsetY + (row - startRow) * tileSize;
     
                     String type;
-                    if (map.isBlocked(pos)) type = "wall";
-                    else if (map.isEntry(pos)) type = "entry";
-                    else if (map.isExit(pos)) type = "exit";
-                    else type = "floor";
+                    if (map.isBlocked(pos)) {
+                        type = "wall";
+                    } else if (map.isEntry(pos)) {
+                        type = "entry";
+                    } else if (map.isExit(pos)) {
+                        // If exit is unlocked, show floor instead of door
+                        // Otherwise show door sprite
+                        if (exitUnlocked) {
+                            type = "floor";
+                        } else {
+                            type = "door"; // Use door sprite when locked
+                        }
+                    } else {
+                        type = "floor";
+                    }
     
                     Image tile = SpriteManager.getTileSprite(type);
                     gc.drawImage(tile, x, y, tileSize, tileSize);

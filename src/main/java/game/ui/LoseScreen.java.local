@@ -1,0 +1,193 @@
+package game.ui;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+
+/**
+ * The {@code LoseScreen} class displays the game over screen when the player loses.
+ * <p>
+ * This screen shows a defeat message, final score, and options to try again
+ * or return to the main menu. Uses a modern color scheme with red accents.
+ * </p>
+ */
+public class LoseScreen extends VBox {
+    
+    /** Text displaying the defeat title */
+    private Text titleText;
+    
+    /** Text displaying a message */
+    private Text messageText;
+    
+    /** Text displaying the final score */
+    private Text scoreText;
+    
+    /** Button to try again */
+    private Button tryAgainButton;
+    
+    /** Button to return to main menu */
+    private Button menuButton;
+    
+    /** Callback invoked when the player clicks "Try Again" */
+    private Runnable onTryAgainCallback;
+    
+    /** Callback invoked when the player clicks "Main Menu" */
+    private Runnable onMenuCallback;
+    
+    /**
+     * Constructs a new {@code LoseScreen}.
+     * <p>
+     * Initializes all UI components, applies styling, and sets up the layout.
+     * </p>
+     */
+    public LoseScreen() {
+        initializeComponents();
+        styleComponents();
+        layoutComponents();
+    }
+    
+    /**
+     * Updates the lose screen with the final score.
+     * 
+     * @param finalScore the player's final score
+     */
+    public void setFinalScore(int finalScore) {
+        scoreText.setText("Final Score: " + finalScore);
+    }
+    
+    /**
+     * Makes the lose screen visible and brings it to the front.
+     */
+    public void show() {
+        this.setVisible(true);
+        this.toFront();
+    }
+    
+    /**
+     * Hides the lose screen from view.
+     */
+    public void hide() {
+        this.setVisible(false);
+    }
+    
+    /**
+     * Sets the callback to be invoked when the player clicks "Try Again".
+     * 
+     * @param callback the {@link Runnable} to execute when Try Again is clicked
+     */
+    public void setOnTryAgain(Runnable callback) {
+        this.onTryAgainCallback = callback;
+    }
+    
+    /**
+     * Sets the callback to be invoked when the player clicks "Main Menu".
+     * 
+     * @param callback the {@link Runnable} to execute when Main Menu is clicked
+     */
+    public void setOnMenu(Runnable callback) {
+        this.onMenuCallback = callback;
+    }
+    
+    /**
+     * Initializes all UI components.
+     */
+    private void initializeComponents() {
+        titleText = new Text("GAME OVER");
+        titleText.setTextAlignment(TextAlignment.CENTER);
+        
+        messageText = new Text("Better luck next time!");
+        messageText.setTextAlignment(TextAlignment.CENTER);
+        
+        scoreText = new Text("Final Score: 0");
+        scoreText.setTextAlignment(TextAlignment.CENTER);
+        
+        tryAgainButton = new Button("Try Again");
+        tryAgainButton.setOnAction(event -> onTryAgain());
+        
+        menuButton = new Button("Main Menu");
+        menuButton.setOnAction(event -> onMenu());
+    }
+    
+    /**
+     * Applies styling to the lose screen components.
+     */
+    private void styleComponents() {
+        // Background - dark with red accents
+        this.setStyle("-fx-background-color: #1a1a2e; -fx-text-fill: #FFFFFF;");
+        
+        // Title - large, bold, red color
+        titleText.setFont(Font.font("System", FontWeight.BOLD, 48));
+        titleText.setStyle("-fx-fill: #FF4444; -fx-effect: dropshadow(three-pass-box, rgba(255,68,68,0.8), 10, 0, 0, 0);");
+        
+        // Message - medium, white
+        messageText.setFont(Font.font("System", FontWeight.NORMAL, 20));
+        messageText.setStyle("-fx-fill: #CCCCCC;");
+        
+        // Score - medium, white
+        scoreText.setFont(Font.font("System", FontWeight.NORMAL, 24));
+        scoreText.setStyle("-fx-fill: #FFFFFF;");
+        
+        // Buttons - styled with red accents
+        Font buttonFont = Font.font("System", FontWeight.BOLD, 18);
+        tryAgainButton.setFont(buttonFont);
+        menuButton.setFont(buttonFont);
+        
+        tryAgainButton.setPrefWidth(200);
+        tryAgainButton.setPrefHeight(45);
+        menuButton.setPrefWidth(200);
+        menuButton.setPrefHeight(45);
+        
+        tryAgainButton.setStyle("-fx-background-color: #FF4444; -fx-text-fill: #FFFFFF; -fx-background-radius: 5;");
+        menuButton.setStyle("-fx-background-color: #2a2a3e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FF4444; -fx-border-width: 2; -fx-border-radius: 5;");
+        
+        // Hover effects
+        tryAgainButton.setOnMouseEntered(e -> tryAgainButton.setStyle("-fx-background-color: #FF6666; -fx-text-fill: #FFFFFF; -fx-background-radius: 5;"));
+        tryAgainButton.setOnMouseExited(e -> tryAgainButton.setStyle("-fx-background-color: #FF4444; -fx-text-fill: #FFFFFF; -fx-background-radius: 5;"));
+        
+        menuButton.setOnMouseEntered(e -> menuButton.setStyle("-fx-background-color: #3a3a4e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FF4444; -fx-border-width: 2; -fx-border-radius: 5;"));
+        menuButton.setOnMouseExited(e -> menuButton.setStyle("-fx-background-color: #2a2a3e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FF4444; -fx-border-width: 2; -fx-border-radius: 5;"));
+    }
+    
+    /**
+     * Sets up the layout and spacing of components.
+     */
+    private void layoutComponents() {
+        this.setAlignment(Pos.CENTER);
+        this.setSpacing(25);
+        this.setPadding(new Insets(40));
+        this.setPrefWidth(600);
+        this.setPrefHeight(400);
+        
+        this.getChildren().addAll(
+            titleText,
+            messageText,
+            scoreText,
+            tryAgainButton,
+            menuButton
+        );
+    }
+    
+    /**
+     * Triggered when the Try Again button is clicked.
+     */
+    private void onTryAgain() {
+        if (onTryAgainCallback != null) {
+            onTryAgainCallback.run();
+        }
+    }
+    
+    /**
+     * Triggered when the Main Menu button is clicked.
+     */
+    private void onMenu() {
+        if (onMenuCallback != null) {
+            onMenuCallback.run();
+        }
+    }
+}
+

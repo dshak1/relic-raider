@@ -137,7 +137,7 @@ public class Game {
      * Uses pathfinding algorithms if available, otherwise falls back to random movement.
      */
     private int enemyMovementTicks = 0;
-    private static final int ENEMY_MOVEMENT_DELAY = 7; // Move every 
+    private static final int ENEMY_MOVEMENT_DELAY = 21; // Move every 28 ticks (4x slower) 
     
     private void processEnemyMovement() {
         enemyMovementTicks++;
