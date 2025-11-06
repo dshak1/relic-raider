@@ -241,24 +241,35 @@ public class HowToPlayScreen extends VBox {
      * </p>
      */
     private void styleComponents() {
-        // Style title text with larger, bold font
+        // Title
         titleText.setFont(Font.font("System", FontWeight.BOLD, 28));
+        titleText.setStyle("-fx-fill: #ffcc33;"); // bright golden title
         
-        // Style back button
-        Font buttonFont = Font.font(16);
-        backButton.setFont(buttonFont);
+        // Section text (body)
+        String bodyColor = "#f1d36b"; // soft gold for readability
+        controlsText.setStyle("-fx-fill: " + bodyColor + ";");
+        objectivesText.setStyle("-fx-fill: " + bodyColor + ";");
+        enemiesText.setStyle("-fx-fill: " + bodyColor + ";");
+        rewardsText.setStyle("-fx-fill: " + bodyColor + ";");
+        
+        // Back button styling
+        backButton.setFont(Font.font(16));
         backButton.setPrefWidth(200);
         backButton.setPrefHeight(40);
+        backButton.setStyle(
+            "-fx-background-color: #c9a66b;" + // muted gold button
+            "-fx-text-fill: #37373aff;" +       // dark text for contrast
+            "-fx-background-radius: 10;"
+        );
         
-        // Style the entire screen
-        this.setStyle("-fx-background-color: #2C2C2C; -fx-text-fill: #8d8d8dff;");
+        // Overall screen background
+        this.setStyle("-fx-background-color: #272729ff;"); // deep dark background
         
-        // Style text sections for better readability
-        controlsText.setStyle("-fx-fill: #c09624ff;");
-        objectivesText.setStyle("-fx-fill: #c09624ff;");
-        enemiesText.setStyle("-fx-fill: #c09624ff;");
-        rewardsText.setStyle("-fx-fill: #c09624ff;");
-        titleText.setStyle("-fx-fill: #c09624ff;"); // Gold color for title
+        // ScrollPane background
+        contentScrollPane.setStyle(
+            "-fx-background: #37373aff;" + 
+            "-fx-background-color: #37373aff;"
+        );
     }
     
     /**
