@@ -1,10 +1,12 @@
 package game.ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.FontWeight;
 
 /**
  * The {@code MenuScreen} class provides the main menu interface that players see when launching the game.
@@ -141,18 +143,50 @@ public class MenuScreen extends VBox {
      * </p>
      */
     private void styleComponents() {
-        // Style title text with larger font
-        titleText.setFont(Font.font(32));
+        // Style title text with larger, bold font and gold color
+        titleText.setFont(Font.font("System", FontWeight.BOLD, 48));
+        titleText.setStyle("-fx-fill: #FFD35A; -fx-stroke: #6A3E00; -fx-stroke-width: 2;");
         
-        // Style buttons with consistent font size
-        Font buttonFont = Font.font(18);
-        playButton.setFont(buttonFont);
-        howToPlayButton.setFont(buttonFont);
-        quitButton.setFont(buttonFont);
+        // Style buttons with custom appearance
+        String buttonStyle = 
+            "-fx-background-color: #D4B896; " +
+            "-fx-border-color: #6A5036; " +
+            "-fx-border-width: 3; " +
+            "-fx-border-radius: 10; " +
+            "-fx-background-radius: 10; " +
+            "-fx-text-fill: #2C2C2C; " +
+            "-fx-font-size: 20; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 15 40 15 40;";
+        
+        String buttonHoverStyle = 
+            "-fx-background-color: #E5C9A7; " +
+            "-fx-border-color: #6A5036; " +
+            "-fx-border-width: 3; " +
+            "-fx-border-radius: 10; " +
+            "-fx-background-radius: 10; " +
+            "-fx-text-fill: #2C2C2C; " +
+            "-fx-font-size: 20; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 15 40 15 40;";
+        
+        playButton.setStyle(buttonStyle);
+        howToPlayButton.setStyle(buttonStyle);
+        quitButton.setStyle(buttonStyle);
+        
+        // Add hover effects
+        playButton.setOnMouseEntered(e -> playButton.setStyle(buttonHoverStyle));
+        playButton.setOnMouseExited(e -> playButton.setStyle(buttonStyle));
+        
+        howToPlayButton.setOnMouseEntered(e -> howToPlayButton.setStyle(buttonHoverStyle));
+        howToPlayButton.setOnMouseExited(e -> howToPlayButton.setStyle(buttonStyle));
+        
+        quitButton.setOnMouseEntered(e -> quitButton.setStyle(buttonHoverStyle));
+        quitButton.setOnMouseExited(e -> quitButton.setStyle(buttonStyle));
         
         // Set consistent button dimensions
-        double buttonWidth = 150;
-        double buttonHeight = 40;
+        double buttonWidth = 250;
+        double buttonHeight = 60;
         
         playButton.setPrefWidth(buttonWidth);
         howToPlayButton.setPrefWidth(buttonWidth);
@@ -174,7 +208,22 @@ public class MenuScreen extends VBox {
     private void layoutComponents() {
         // Configure VBox layout properties
         this.setAlignment(Pos.CENTER);
-        this.setSpacing(20);
+        this.setSpacing(25);
+        this.setPadding(new Insets(50));
+        
+        // Set fixed size to match scene dimensions
+        this.setPrefSize(800, 600);
+        this.setMinSize(800, 600);
+        this.setMaxSize(800, 600);
+        
+        // Add background image with black background
+        this.setStyle(
+            "-fx-background-color: black;" +
+            "-fx-background-image: url('/assets/sprites/menu_background.png');" +
+            "-fx-background-size: 100% auto;" +
+            "-fx-background-position: center;" +
+            "-fx-background-repeat: no-repeat;"
+        );
         
         // Add all components to the VBox in display order
         this.getChildren().addAll(
