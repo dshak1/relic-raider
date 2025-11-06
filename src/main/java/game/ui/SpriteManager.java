@@ -51,7 +51,7 @@ public class SpriteManager {
         spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BONUS));
         spriteCache.put(Enemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
         spriteCache.put(Reward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
-        spriteCache.put(StationaryEnemy.class, ResourceLoader.loadImage("spikes.png"));
+        spriteCache.put(StationaryEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_SPIKES));
 
 
         // Tile sprites
