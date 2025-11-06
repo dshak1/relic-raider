@@ -158,7 +158,7 @@ public class HowToPlayScreen extends VBox {
         controls.append("  ").append(GameConfig.getKeyName(GameConfig.KEY_MENU)).append(" - Return to Menu\n");
         
         Text text = new Text(controls.toString());
-        text.setFont(Font.font("Monospaced", 14));
+        text.setFont(Font.font("Monospaced", 16));
         return text;
     }
     
@@ -179,7 +179,7 @@ public class HowToPlayScreen extends VBox {
         objectives.append("  • Your score drops below ").append(GameConfig.MIN_SCORE_THRESHOLD).append(" due to trap damage\n");
         
         Text text = new Text(objectives.toString());
-        text.setFont(Font.font("Monospaced", 14));
+        text.setFont(Font.font("Monospaced", 16));
         return text;
     }
     
@@ -204,7 +204,7 @@ public class HowToPlayScreen extends VBox {
         enemies.append("  • If your total score becomes negative, you lose!\n");
         
         Text text = new Text(enemies.toString());
-        text.setFont(Font.font("Monospaced", 14));
+        text.setFont(Font.font("Monospaced", 16));
         return text;
     }
     
@@ -229,7 +229,7 @@ public class HowToPlayScreen extends VBox {
         rewards.append("  • Act quickly to claim them!\n");
         
         Text text = new Text(rewards.toString());
-        text.setFont(Font.font("Monospaced", 14));
+        text.setFont(Font.font("Monospaced", 16));
         return text;
     }
     
@@ -241,58 +241,56 @@ public class HowToPlayScreen extends VBox {
      * </p>
      */
     private void styleComponents() {
-        // Style title text with larger, bold font
+        // Title
         titleText.setFont(Font.font("System", FontWeight.BOLD, 28));
+        titleText.setStyle("-fx-fill: #ffd700;"); // bright gold
         
-        // Style back button to match menu screen buttons
-        Font buttonFont = Font.font("System", FontWeight.BOLD, 20);
-        backButton.setFont(buttonFont);
-        backButton.setPrefWidth(250);
-        backButton.setPrefHeight(60);
+        // Text sections
+        String sectionColor = "#f0e68c"; // soft gold/yellow
+        controlsText.setStyle("-fx-fill: " + sectionColor + ";");
+        objectivesText.setStyle("-fx-fill: " + sectionColor + ";");
+        enemiesText.setStyle("-fx-fill: " + sectionColor + ";");
+        rewardsText.setStyle("-fx-fill: " + sectionColor + ";");
         
-        // Match menu button style
-        String buttonStyle = 
-            "-fx-background-color: #D4B896; " +
-            "-fx-border-color: #6A5036; " +
-            "-fx-border-width: 3; " +
-            "-fx-border-radius: 10; " +
-            "-fx-background-radius: 10; " +
-            "-fx-text-fill: #2C2C2C; " +
-            "-fx-font-size: 20; " +
-            "-fx-font-weight: bold; " +
-            "-fx-padding: 15 40 15 40;";
-        
-        String buttonHoverStyle = 
-            "-fx-background-color: #E5C9A7; " +
-            "-fx-border-color: #6A5036; " +
-            "-fx-border-width: 3; " +
-            "-fx-border-radius: 10; " +
-            "-fx-background-radius: 10; " +
-            "-fx-text-fill: #2C2C2C; " +
-            "-fx-font-size: 20; " +
-            "-fx-font-weight: bold; " +
-            "-fx-padding: 15 40 15 40;";
-        
-        backButton.setStyle(buttonStyle);
-        backButton.setOnMouseEntered(e -> backButton.setStyle(buttonHoverStyle));
-        backButton.setOnMouseExited(e -> backButton.setStyle(buttonStyle));
-        
-        // Style the entire screen to match menu background
-        this.setStyle(
-            "-fx-background-color: black;" +
-            "-fx-background-image: url('/assets/sprites/menu_background.png');" +
-            "-fx-background-size: 100% auto;" +
-            "-fx-background-position: center;" +
-            "-fx-background-repeat: no-repeat;"
+        // Back button styling
+        backButton.setFont(Font.font(16));
+        backButton.setPrefWidth(200);
+        backButton.setPrefHeight(40);
+        backButton.setStyle(
+            "-fx-background-color: #D4B896;" + // muted slate
+            "-fx-text-fill: #2B2B2B;" +        // off-white text
+            "-fx-background-radius: 10;" +     // rounded corners
+            "-fx-border-color: #6A5036;" +     // border same as text
+            "-fx-border-width: 2;" +           // border thickness
+            "-fx-border-radius: 10;"           // match rounded corners
         );
+        backButton.setOnMouseEntered(e -> backButton.setStyle(
+            "-fx-background-color: #e6caa9ff;" +  // slightly brighter
+            "-fx-text-fill: #2B2B2B;" +
+            "-fx-background-radius: 10;" +
+            "-fx-border-color: #856443ff;" +
+            "-fx-border-width: 2;" +
+            "-fx-border-radius: 10;"
+        ));
+        backButton.setOnMouseExited(e -> backButton.setStyle(
+            "-fx-background-color: #D4B896;" +
+            "-fx-text-fill: #2B2B2B;" +
+            "-fx-background-radius: 10;" +
+            "-fx-border-color: #6A5036;" +
+            "-fx-border-width: 2;" +
+            "-fx-border-radius: 10;"
+        ));
         
-        // Style text sections to match menu theme - darker text for readability on background
-        controlsText.setStyle("-fx-fill: #D4B896;");
-        objectivesText.setStyle("-fx-fill: #D4B896;");
-        enemiesText.setStyle("-fx-fill: #D4B896;");
-        rewardsText.setStyle("-fx-fill: #D4B896;");
-        titleText.setStyle("-fx-fill: #E5C9A7; -fx-effect: dropshadow(three-pass-box, rgba(106,80,54,0.8), 8, 0, 0, 0);"); // Lighter tan for title
+        // Overall screen background
+        this.setStyle("-fx-background-color: #47413bff;"); // dark midnight blue
+        
+        // ScrollPane background
+        contentScrollPane.setStyle(
+            "-fx-background: #47413bff;" + 
+            "-fx-background-color: #47413bff;"
+        );
     }
+
     
     /**
      * Sets up the layout and spacing of instruction components.
