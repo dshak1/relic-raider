@@ -211,19 +211,6 @@ public class GameCanvas {
     }
 
     /**
-     * Helper method to draw an image tile at a given coordinate
-     */
-    private void drawTile(Image image, double x, double y, int tileSize) {
-        if (image != null) {
-            gc.drawImage(image, x, y, tileSize, tileSize);
-        } else {
-            // prototype fallback behaviour
-            gc.setFill(Color.WHITE);
-            gc.fillRect(x, y, tileSize, tileSize);
-        }
-    }
-
-    /**
      * Clears the canvas before redrawing a new frame - prototype behaviour
      */
     public void clear() {
