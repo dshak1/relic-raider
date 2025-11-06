@@ -59,6 +59,10 @@ public class Game {
     /** Timestamp in milliseconds when the player last took damage from a spike. */
     private long lastDamageTime = 0;
 
+    /** The wall tile blocking the exit; becomes passable after collecting all basic rewards */
+    private Position exitWallTile;
+
+
     /**
      * Private constructor for Game instances.
      * Use Game.Builder to create new instances.
@@ -193,6 +197,7 @@ public class Game {
                 // Update basic collected counter for non-bonus rewards
                 if (!r.isBonus()) {
                     basicCollected++;
+                    unlockExitWall();
                 }
             }
         }
@@ -568,6 +573,48 @@ public class Game {
     public List<Enemy> getEnemies() {
         return new java.util.ArrayList<>(enemies);
     }
+
+    /**
+     * Sets the wall tile that blocks the exit.
+     * 
+     * @param pos the position of the tile to unlock
+     */
+    public void setExitWallTile(Position pos) {
+        this.exitWallTile = pos;
+    }
+
+    /**
+     * Returns true if the player has collected all required basic rewards
+     * and the exit wall should be unlocked.
+     */
+    public boolean isExitUnlocked() {
+        return basicCollected >= basicToCollect;
+    }
+
+    private void unlockExitWall() {
+        if (exitWallTile != null && isExitUnlocked()) {
+            map.getTile(exitWallTile).setBlocked(false);
+        }
+    }
+
+    /**
+     * Checks if the player can move into a tile.
+     * 
+     * @param pos
+     * @return true or false the tile can be walked on
+     */
+    public boolean isTilePassable(Position pos) {
+        // Normal passable logic
+        if (map.isPassable(pos)) return true;
+
+        // Special case: allow player to pass through exit wall if unlocked
+        if (exitWallTile != null && pos.equals(exitWallTile) && isExitUnlocked()) {
+            return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * Gets the list of rewards in the game.
