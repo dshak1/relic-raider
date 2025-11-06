@@ -78,7 +78,12 @@ public class GameConfig {
     /**
      * Duration (in ticks) that bonus rewards remain visible before disappearing.
      */
-    public static final int BONUS_REWARD_DURATION_TICKS = 10;
+    public static final int BONUS_REWARD_DURATION_TICKS = 20;
+    
+    /**
+     * Delay (in ticks) before a bonus reward respawns after disappearing.
+     */
+    public static final int BONUS_REWARD_RESPAWN_DELAY_TICKS = 10;
     
     
     // ========================

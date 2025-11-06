@@ -116,6 +116,9 @@ public class Game {
         // Process enemy movement with pathfinding integration
         processEnemyMovement();
 
+        // Update bonus rewards (check if they should disappear)
+        updateBonusRewards();
+
         // Handle entity interactions
         resolveCollisions();
 
@@ -130,6 +133,18 @@ public class Game {
             end();
         }
 
+    }
+
+    /**
+     * Updates all bonus rewards, checking if they should disappear after their duration.
+     */
+    private void updateBonusRewards() {
+        for (Reward reward : rewards) {
+            if (reward instanceof game.reward.BonusReward) {
+                game.reward.BonusReward bonusReward = (game.reward.BonusReward) reward;
+                bonusReward.tick(map, enemies, rewards);  // Pass map, enemies, and rewards for collision checking
+            }
+        }
     }
 
     /**
@@ -183,6 +198,15 @@ public class Game {
         
         for (Reward r : rewards) {
             System.out.println("Reward position: " + r.getPosition() + ", collected: " + r.isCollected());
+            
+            // Skip bonus rewards that are not active
+            if (r instanceof game.reward.BonusReward) {
+                game.reward.BonusReward bonusReward = (game.reward.BonusReward) r;
+                if (!bonusReward.isActive()) {
+                    continue;
+                }
+            }
+
             if (player.collidesWith(r) && !r.isCollected()) {
                 System.out.println("COLLISION DETECTED WITH REWARD!");
                 player.collect(r);
@@ -633,7 +657,7 @@ public class Game {
             new Position(20, 20),                 // Lower-right area
             new Position(18, 8)                   // Left-center area
         };
-        
+        /* 
         for (int i = 0; i < enemyPositions.length; i++) {
             Position pos = enemyPositions[i];
             if (map.inBounds(pos) && map.isPassable(pos)) {
@@ -644,7 +668,7 @@ public class Game {
                     pathfinder
                 ));
             }
-        }
+        }*/
         
         // Add stationary enemies (purple - spike traps)
         Position[] spikePositions = {
@@ -698,15 +722,14 @@ public class Game {
             new Position(mapHeight - 3, mapWidth - 5)
         };
         
-        for (Position pos : bonusPositions) {
-            if (map.inBounds(pos) && map.isPassable(pos)) {
-                builder.addReward(new game.reward.BonusReward(
-                    pos,
-                    game.ui.GameConfig.BONUS_REWARD_VALUE,
-                    null
-                ));
-            }
-        }
+        // Add bonus rewards (optional, high value) - place next to player start
+        Position bonusPos = new Position(entry.getRow(), entry.getCol() + 3);
+        builder.addReward(new game.reward.BonusReward(
+            bonusPos,
+            game.ui.GameConfig.BONUS_REWARD_VALUE,
+            game.ui.GameConfig.BONUS_REWARD_DURATION_TICKS,
+            game.ui.GameConfig.BONUS_REWARD_RESPAWN_DELAY_TICKS
+        ));
         
         return builder.build();
     }
