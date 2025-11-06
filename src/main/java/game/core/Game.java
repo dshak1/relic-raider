@@ -5,6 +5,7 @@ import game.entity.Enemy;
 import game.entity.Player;
 import game.map.Map;
 import game.map.Position;
+import game.reward.FinalReward;
 import game.reward.Reward;
 import game.ui.HUD;
 
@@ -266,6 +267,7 @@ public class Game {
     public boolean checkWin() {
         return player.atExit(map) && finalRewardCollected;
     }
+
 
     /**
      * Checks whether the player has lost the game.
@@ -707,17 +709,20 @@ public class Game {
         Position exitWall1 = new Position(exit.getRow(), exit.getCol() - 6);
         Position exitWall2 = new Position(exit.getRow(), exit.getCol() - 7);
 
-        map.getTile(exitWall1).setBlocked(true);
-        map.getTile(exitWall2).setBlocked(true);
+        map.getTile(exitWall1).setBlocked(false);
+        map.getTile(exitWall2).setBlocked(false);
 
         // Track both tiles for later unlocking
         List<Position> exitWallTiles = new ArrayList<>();
         exitWallTiles.add(exitWall1);
         exitWallTiles.add(exitWall2);
 
-        Game game = builder.build();
-        game.setExitWallTiles(exitWallTiles);
 
+        Game game = builder.build();
+
+        // Place final reward at 8th column from right, 2nd row
+        Position finalRewardPos = new Position(1, mapWidth - 8);
+        builder.addReward(new FinalReward(finalRewardPos, GameConfig.FINAL_REWARD_VALUE, game));
         
         // Add mobile enemies (red - skeletons/boulders) with A* pathfinding
         PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
@@ -923,15 +928,4 @@ public class Game {
         return new java.util.ArrayList<>(rewards);
     }
 
-    public void setExitWallTiles(List<Position> tiles) {
-        this.exitWallTiles = tiles;
-    }
-
-    private void unlockExitWall() {
-        if (exitWallTiles != null && basicCollected >= basicToCollect) {
-            for (Position pos : exitWallTiles) {
-                map.getTile(pos).setBlocked(false);
-            }
-        }
-    }
 }

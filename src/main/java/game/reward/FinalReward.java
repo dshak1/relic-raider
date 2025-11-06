@@ -32,4 +32,3 @@ public class FinalReward extends Reward {
         applyTo(player);
     }
 }
-

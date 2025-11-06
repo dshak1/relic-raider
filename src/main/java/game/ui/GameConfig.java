@@ -150,6 +150,12 @@ public class GameConfig {
     public static final int BONUS_REWARD_VALUE = 50;
     
     /**
+     * Points awarded for getting the final reward, necessary to exit the game/win.
+     * Implemented in Phase 2.
+     */
+    public static final int FINAL_REWARD_VALUE = 100;
+    
+    /**
      * Points deducted when stepping on a punishment (spike trap).
      * Based on Phase 1 spec: "reduce player's score by 20 points when in contact"
      */
