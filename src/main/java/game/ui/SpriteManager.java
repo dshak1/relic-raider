@@ -10,6 +10,7 @@ import game.entity.Player;
 import game.entity.StationaryEnemy;
 import game.reward.BasicReward;
 import game.reward.BonusReward;
+import game.reward.FinalReward;
 import game.reward.Reward;
 import javafx.scene.image.Image;
 
@@ -54,6 +55,7 @@ public class SpriteManager {
         spriteCache.put(MobileEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
         spriteCache.put(Reward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
         spriteCache.put(StationaryEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_SPIKES));
+        spriteCache.put(FinalReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
 
 
         // Tile sprites
@@ -61,7 +63,6 @@ public class SpriteManager {
         floor = ResourceLoader.loadImage(GameConfig.IMAGE_FLOOR);
         entry = ResourceLoader.loadImage(GameConfig.IMAGE_ENTRY);
         exit = ResourceLoader.loadImage(GameConfig.IMAGE_EXIT);
-        door = ResourceLoader.loadImage(GameConfig.IMAGE_DOOR);
 
         // Fallback
         defaultSprite = ResourceLoader.loadImage(GameConfig.IMAGE_DEFAULT);
