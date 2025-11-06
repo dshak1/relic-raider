@@ -654,8 +654,51 @@ public class Game {
                 }
             }
         }
-        // Create entrance to circular room
-        map.getTile(new Position(centerRow, centerCol - radius)).setBlocked(false);
+        
+        // Create entrance to circular room (left side)
+        Position roomEntrance = new Position(centerRow, centerCol - radius);
+        map.getTile(roomEntrance).setBlocked(false);
+        
+        // Create a clear horizontal corridor from entrance to exit
+        // Exit is at (mapHeight / 2, mapWidth - 6), which is at the same row as centerRow
+        // Create a path from the entrance (centerCol - radius) to the exit (mapWidth - 6)
+        int exitRow = exit.getRow();
+        int exitCol = exit.getCol();
+        int entranceCol = centerCol - radius;
+        
+        // Clear a horizontal path from entrance to exit on the center row
+        for (int c = entranceCol; c <= exitCol; c++) {
+            Position pathPos = new Position(centerRow, c);
+            if (map.inBounds(pathPos)) {
+                map.getTile(pathPos).setBlocked(false);
+            }
+        }
+        
+        // Also clear a wider corridor (3 tiles tall) to ensure easy access
+        for (int r = centerRow - 1; r <= centerRow + 1; r++) {
+            for (int c = entranceCol; c <= exitCol; c++) {
+                Position pathPos = new Position(r, c);
+                if (map.inBounds(pathPos)) {
+                    map.getTile(pathPos).setBlocked(false);
+                }
+            }
+        }
+        
+        // Ensure exit is always passable
+        map.getTile(exit).setBlocked(false);
+        // Ensure tiles adjacent to exit are also passable
+        if (map.inBounds(new Position(exitRow, exitCol - 1))) {
+            map.getTile(new Position(exitRow, exitCol - 1)).setBlocked(false);
+        }
+        if (map.inBounds(new Position(exitRow, exitCol + 1))) {
+            map.getTile(new Position(exitRow, exitCol + 1)).setBlocked(false);
+        }
+        if (map.inBounds(new Position(exitRow - 1, exitCol))) {
+            map.getTile(new Position(exitRow - 1, exitCol)).setBlocked(false);
+        }
+        if (map.inBounds(new Position(exitRow + 1, exitCol))) {
+            map.getTile(new Position(exitRow + 1, exitCol)).setBlocked(false);
+        }
         
         Player player = new Player(entry);
         Game.Builder builder = Game.builder()
