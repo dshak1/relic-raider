@@ -150,6 +150,12 @@ public class GameConfig {
     public static final int BONUS_REWARD_VALUE = 50;
     
     /**
+     * Points awarded for getting the final reward, necessary to exit the game/win.
+     * Implemented in Phase 2.
+     */
+    public static final int FINAL_REWARD_VALUE = 100;
+    
+    /**
      * Points deducted when stepping on a punishment (spike trap).
      * Based on Phase 1 spec: "reduce player's score by 20 points when in contact"
      */
@@ -191,9 +197,19 @@ public class GameConfig {
 
     /** Path to the player sprite image. */
     public static final String IMAGE_PLAYER = "player.png";
+    /** Path to the player sprite facing left. */
+    public static final String IMAGE_PLAYER_LEFT = "player_left.png";
+
+    /** Path to the player sprite facing right. */
+    public static final String IMAGE_PLAYER_RIGHT = "player_right.png";
 
     /** Path to the enemy sprite image. */
     public static final String IMAGE_ENEMY = "enemy.png";
+    /** Path to the enemy sprite facing left. */
+    public static final String IMAGE_ENEMY_LEFT = "enemy_left.png";
+
+    /** Path to the enemy sprite facing right. */
+    public static final String IMAGE_ENEMY_RIGHT = "enemy_right.png";
 
     /** Path to the stationary enemy sprite image */
     public static final String IMAGE_SPIKES = "spikes.png";
@@ -215,6 +231,9 @@ public class GameConfig {
 
     /** Path to the door sprite image (locked exit). */
     public static final String IMAGE_DOOR = "door.png";
+
+    /** Path to the open door sprite image (unlocked exit). */
+    public static final String IMAGE_DOOR_OPEN = "tile_exit.png";
 
     /** Path to the default placeholder sprite image, used when no other sprite is available. */
     public static final String IMAGE_DEFAULT = "default.png";

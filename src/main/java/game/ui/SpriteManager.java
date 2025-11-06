@@ -7,6 +7,7 @@ import game.entity.Entity;
 import game.entity.Enemy;
 import game.entity.MobileEnemy;
 import game.entity.Player;
+import game.core.Direction;
 import game.entity.StationaryEnemy;
 import game.reward.BasicReward;
 import game.reward.BonusReward;
@@ -39,6 +40,12 @@ public class SpriteManager {
     private static Image door;
     private static Image floor;
     private static Image defaultSprite;
+    // player directional sprites
+    private static Image playerLeft;
+    private static Image playerRight;
+    // enemy directional sprites
+    private static Image enemyLeft;
+    private static Image enemyRight;
 
     /**
      * Loads and caches all entity and tile sprites.
@@ -49,6 +56,12 @@ public class SpriteManager {
     public static void initialize() {
         // Entity sprites
         spriteCache.put(Player.class, ResourceLoader.loadImage(GameConfig.IMAGE_PLAYER));
+        // directional player sprites (used when rendering player facing left/right)
+        playerLeft = ResourceLoader.loadImage(GameConfig.IMAGE_PLAYER_LEFT);
+        playerRight = ResourceLoader.loadImage(GameConfig.IMAGE_PLAYER_RIGHT);
+        // directional enemy sprites
+        enemyLeft = ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY_LEFT);
+        enemyRight = ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY_RIGHT);
         spriteCache.put(BasicReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BASIC));
         spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BONUS));
         spriteCache.put(MobileEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
@@ -78,6 +91,25 @@ public class SpriteManager {
      */
     public static Image getSprite(Entity entity) {
         if (entity == null) return defaultSprite;
+        // Use player-specific directional sprites when available
+        if (entity instanceof Player) {
+            Player p = (Player) entity;
+            Direction last = p.getLastHorizontalDirection();
+            if (last == Direction.LEFT && playerLeft != null) return playerLeft;
+            if (last == Direction.RIGHT && playerRight != null) return playerRight;
+            // fallback to the generic player sprite
+            return spriteCache.getOrDefault(Player.class, defaultSprite);
+        }
+
+        // Use mobile-enemy-specific directional sprites when available
+        if (entity instanceof MobileEnemy) {
+            MobileEnemy e = (MobileEnemy) entity;
+            Direction last = e.getLastHorizontalDirection();
+            if (last == Direction.LEFT && enemyLeft != null) return enemyLeft;
+            if (last == Direction.RIGHT && enemyRight != null) return enemyRight;
+            return spriteCache.getOrDefault(MobileEnemy.class, defaultSprite);
+        }
+
         return spriteCache.getOrDefault(entity.getClass(), defaultSprite);
     }
 
