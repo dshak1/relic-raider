@@ -804,9 +804,9 @@ public class Game {
             ));
         }
         
-        // Add final reward in the middle of the map
-        Position finalRewardPos = new Position(mapHeight / 2, mapWidth / 2 + 5);  // Slightly offset from center to avoid overlap with totem
-        if (map.inBounds(finalRewardPos) && map.isPassable(finalRewardPos) && !finalRewardPos.equals(bonusPos)) {
+        // Add final reward on the edge of the map (top-right corner area, inside border)
+        Position finalRewardPos = new Position(2, mapWidth - 3);  // Top-right area, near edge but inside border
+        if (map.inBounds(finalRewardPos) && map.isPassable(finalRewardPos) && !finalRewardPos.equals(bonusPos) && !finalRewardPos.equals(entry) && !finalRewardPos.equals(exit)) {
             builder.addReward(new game.reward.FinalReward(
                 finalRewardPos,
                 GameConfig.BONUS_REWARD_VALUE * 2  // High value for final reward
