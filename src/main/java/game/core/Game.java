@@ -399,123 +399,314 @@ public class Game {
         Map map = new Map(mapWidth, mapHeight);
         map.createBorder();
         
-        // Set entry point (left side, inside border)
-        Position entry = new Position(mapHeight - 3, 2);
+        // Set entry point (bottom-left area)
+        Position entry = new Position(mapHeight - 2, 1);
         map.setEntryPoint(entry);
         
-        // Set exit point (right side, inside border)
-        Position exit = new Position(3, mapWidth - 3);
+        // Set exit point (right side, in circular room area)
+        Position exit = new Position(mapHeight / 2, mapWidth - 6);
         map.setExitPoint(exit);
         
-        // Add some simple internal walls for maze structure
-        // Vertical wall in left area
-        for (int row = 5; row < 15; row++) {
-            Position wallPos = new Position(row, 10);
-            if (map.inBounds(wallPos)) {
-                map.getTile(wallPos).setBlocked(true);
-            }
-        }
+        // Create room structures and corridors
         
-        // Vertical wall in right area
-        for (int row = 10; row < 25; row++) {
-            Position wallPos = new Position(row, 30);
-            if (map.inBounds(wallPos)) {
-                map.getTile(wallPos).setBlocked(true);
-            }
-        }
+        map.getTile(new Position(mapHeight - 10 - 1, 1)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 2)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 3)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 4)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 6)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 7)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 8)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 9)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 10)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 11)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 - 1, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 2, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 3, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 4, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 5, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 6, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 7, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 8, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 10, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 11, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 12, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 13, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 14, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 16, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 11)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 12)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 13)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 14)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 - 16, 14)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 14)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 15)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 16)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 17)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 18)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 19)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 22)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 15, 23)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 - 16, 23)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 23)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 24)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 25)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 25)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 16)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 17)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 18)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 19)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 18, 22)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 16)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 17)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 18)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 19)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 17, 21)).setBlocked(true);
+
+        //
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 12)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 13)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 14)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 15)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 16)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 17)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 18)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 19)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 22)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 - 9, 23)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 4, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 5, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 8, 11)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 9, 11)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 12)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 13)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 14)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 15)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 16)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 17)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 18)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 22)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 23)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 24)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 25)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 + 4, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 5, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 7, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 8, 20)).setBlocked(true);
         
-        // Horizontal wall in middle
-        for (int col = 15; col < 25; col++) {
-            Position wallPos = new Position(15, col);
-            if (map.inBounds(wallPos)) {
-                map.getTile(wallPos).setBlocked(true);
-            }
-        }
+        map.getTile(new Position(mapHeight - 10 - 1 + 3, 25)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 2, 25)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 1, 25)).setBlocked(true);
         
-        // Small room structure in center
-        for (int col = 18; col < 23; col++) {
-            if (col != 20) { // Leave opening
-                Position wallPos = new Position(10, col);
-                if (map.inBounds(wallPos)) {
-                    map.getTile(wallPos).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 4, 25)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 5, 25)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 25)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 26)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 27)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 28)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 29)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 30)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 31)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 32)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 33)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 34)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 35)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 36)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 37)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 38)).setBlocked(true);
+        
+        map.getTile(new Position(mapHeight - 10 - 1 + 6, 23)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 7, 23)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 8, 23)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1 + 9, 23)).setBlocked(true);
+        
+        map.getTile(new Position(mapHeight - 10 - 5, 17)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 5, 16)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 5, 15)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 5, 14)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 5, 13)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 4, 13)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 3, 13)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 2, 13)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 13)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 1, 14)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 15)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 16)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 17)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 18)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 19)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 20)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 1, 21)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 2, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 3, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 4, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 5, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 6, 21)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 7, 21)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 19, 30)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 18, 30)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 17, 30)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 16, 30)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 15, 30)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 15, 31)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 15, 32)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 15, 33)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 15, 34)).setBlocked(true);
+        
+        map.getTile(new Position(mapHeight - 10 - 14, 34)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 13, 34)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 12, 34)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 11, 34)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 10, 1)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 10, 2)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 10, 3)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 10, 4)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 10, 5)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 10, 6)).setBlocked(true);
+
+        map.getTile(new Position(mapHeight - 10 - 9, 6)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 8, 6)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 7, 6)).setBlocked(true);
+        map.getTile(new Position(mapHeight - 10 - 6, 6)).setBlocked(true);
+
+        // Circular final room walls (approximation)
+        int centerRow = mapHeight / 2;
+        int centerCol = mapWidth - 8;
+        int radius = 5;
+        for (int r = centerRow - radius; r <= centerRow + radius; r++) {
+            for (int c = centerCol - radius; c <= centerCol + radius; c++) {
+                int distSq = (r - centerRow) * (r - centerRow) + (c - centerCol) * (c - centerCol);
+                if (distSq >= (radius - 1) * (radius - 1) && distSq <= (radius + 1) * (radius + 1)) {
+                    Position pos = new Position(r, c);
+                    if (map.inBounds(pos) && !pos.equals(exit)) {
+                        map.getTile(pos).setBlocked(true);
+                    }
                 }
             }
         }
+        // Create entrance to circular room
+        map.getTile(new Position(centerRow, centerCol - radius)).setBlocked(false);
         
         Player player = new Player(entry);
-        
         Game.Builder builder = Game.builder()
             .setMap(map)
             .setPlayer(player);
         
-        // Add mobile enemies that chase the player using A* pathfinding strategy
+        // Add mobile enemies (red - skeletons/boulders) with A* pathfinding
         PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
-        Position startPoint = map.getEntryPoint();
-        final int MIN_DISTANCE_FROM_PLAYER = 15;  // Minimum Manhattan distance from player start, 
-        // so that it doesn't spawn too close to where the player starts
         
-        // Add three enemies at random positions
-        for (int i = 1; i <= 3; i++) {
-            Position enemyPos;
-            do {
-                // Generate random position within the map bounds (avoiding borders)
-                int row = 2 + (int)(Math.random() * (mapHeight - 4));
-                int col = 2 + (int)(Math.random() * (mapWidth - 4));
-                enemyPos = new Position(row, col);
-                
-                // Calculate Manhattan distance from player start
-                int distance = Math.abs(enemyPos.getRow() - startPoint.getRow()) + 
-                             Math.abs(enemyPos.getCol() - startPoint.getCol());
-                             
-                // Check if position is valid (passable and far enough from player)
-                if (map.isPassable(enemyPos) && distance >= MIN_DISTANCE_FROM_PLAYER) {
-                    break;
-                }
-            } while (true);
-            
-            builder.addEnemy(new game.entity.MobileEnemy(
-                "mobile_enemy_" + i,
-                Integer.MAX_VALUE, // instant defeat on contact
-                enemyPos,
-                pathfinder
-            ));
-        }
+        // Enemy positions based on diagram
+        Position[] enemyPositions = {
+            new Position(mapHeight - 6, 6),      // Bottom-left room
+            new Position(12, 18),                 // Central area
+            new Position(10, 25),                 // Right-center area
+            new Position(20, 20),                 // Lower-right area
+            new Position(18, 8)                   // Left-center area
+        };
         
-        builder.addEnemy(new game.entity.StationaryEnemy(
-            "spike1",
-            game.ui.GameConfig.SPIKE_TRAP_PENALTY,
-            new Position(20, 1)
-        ));
-        
-        // Spawn 10 gems (basic rewards) at random valid positions
-        int gemsSpawned = 0;
-        while (gemsSpawned < 10) {
-            int row = 2 + (int)(Math.random() * (mapHeight - 4));
-            int col = 2 + (int)(Math.random() * (mapWidth - 4));
-            Position gemPos = new Position(row, col);
-            // Don't spawn on entry, exit, or blocked tiles, or duplicate positions
-            boolean isDuplicate = false;
-            if (!map.isPassable(gemPos) || map.isEntry(gemPos) || map.isExit(gemPos)) continue;
-            for (Reward r : builder.rewards) {
-                if (r.getPosition().equals(gemPos)) {
-                    isDuplicate = true;
-                    break;
-                }
+        for (int i = 0; i < enemyPositions.length; i++) {
+            Position pos = enemyPositions[i];
+            if (map.inBounds(pos) && map.isPassable(pos)) {
+                builder.addEnemy(new game.entity.MobileEnemy(
+                    "mobile_enemy_" + (i + 1),
+                    Integer.MAX_VALUE,
+                    pos,
+                    pathfinder
+                ));
             }
-            if (isDuplicate) continue;
-            builder.addReward(new game.reward.BasicReward(
-                gemPos,
-                game.ui.GameConfig.REGULAR_REWARD_VALUE
-            ));
-            gemsSpawned++;
         }
         
-        // Add bonus rewards (optional, high value)
-        builder.addReward(new game.reward.BonusReward(
-            new Position(12, 20),
-            game.ui.GameConfig.BONUS_REWARD_VALUE,
-            null
-        ));
+        // Add stationary enemies (purple - spike traps)
+        Position[] spikePositions = {
+            new Position(mapHeight - 7, 15),
+            new Position(mapHeight - 12, 7),
+            new Position(14, 12),
+            new Position(16, 22),
+            new Position(10, 10),
+            new Position(20, 16),
+            new Position(12, 8),
+            new Position(22, 25)
+        };
+        
+        for (int i = 0; i < spikePositions.length; i++) {
+            Position pos = spikePositions[i];
+            if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry)) {
+                builder.addEnemy(new game.entity.StationaryEnemy(
+                    "spike_" + (i + 1),
+                    game.ui.GameConfig.SPIKE_TRAP_PENALTY,
+                    pos
+                ));
+            }
+        }
+        
+        // Add regular rewards (orange - golden coins)
+        Position[] coinPositions = {
+            new Position(mapHeight - 5, 5),
+            new Position(mapHeight - 8, 8),
+            new Position(15, 8),
+            new Position(10, 20),
+            new Position(18, 18),
+            new Position(22, 10),
+            new Position(12, 25),
+            new Position(8, 15),
+            new Position(20, 30),
+            new Position(mapHeight - 15, 12)
+        };
+        
+        for (Position pos : coinPositions) {
+            if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry) && !pos.equals(exit)) {
+                builder.addReward(new game.reward.BasicReward(
+                    pos,
+                    game.ui.GameConfig.REGULAR_REWARD_VALUE
+                ));
+            }
+        }
+        
+        // Add bonus rewards (yellow - treasure chests)
+        Position[] bonusPositions = {
+            new Position(5, 5),
+            new Position(mapHeight - 3, mapWidth - 5)
+        };
+        
+        for (Position pos : bonusPositions) {
+            if (map.inBounds(pos) && map.isPassable(pos)) {
+                builder.addReward(new game.reward.BonusReward(
+                    pos,
+                    game.ui.GameConfig.BONUS_REWARD_VALUE,
+                    null
+                ));
+            }
+        }
         
         return builder.build();
     }
