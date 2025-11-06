@@ -1,0 +1,5 @@
+Win/Lose screens + HowToPlay screen, most of the formatting and colours as they were, so we should probably change those
+
+pause, instruction screen, 
+
+We do have a door sprite, if you want to use that for the room, we can just make it disappear when it unlocks

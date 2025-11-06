@@ -36,6 +36,7 @@ public class SpriteManager {
     private static Image wall;
     private static Image entry;
     private static Image exit;
+    private static Image door;
     private static Image floor;
     private static Image defaultSprite;
 
@@ -60,6 +61,7 @@ public class SpriteManager {
         floor = ResourceLoader.loadImage(GameConfig.IMAGE_FLOOR);
         entry = ResourceLoader.loadImage(GameConfig.IMAGE_ENTRY);
         exit = ResourceLoader.loadImage(GameConfig.IMAGE_EXIT);
+        door = ResourceLoader.loadImage(GameConfig.IMAGE_DOOR);
 
         // Fallback
         defaultSprite = ResourceLoader.loadImage(GameConfig.IMAGE_DEFAULT);
@@ -82,10 +84,10 @@ public class SpriteManager {
     /**
      * Returns the tile sprite for the given type string.
      * <p>
-     * Supports "wall", "entry", "exit". Any other string returns the default sprite.
+     * Supports "wall", "entry", "exit", "door", "floor". Any other string returns the default sprite.
      * </p>
      *
-     * @param type the type of tile ("wall", "entry", "exit")
+     * @param type the type of tile ("wall", "entry", "exit", "door", "floor")
      * @return the corresponding {@link Image}, or default if unknown
      */
     public static Image getTileSprite(String type) {
@@ -93,6 +95,7 @@ public class SpriteManager {
             case "wall" -> wall;
             case "entry" -> entry;
             case "exit" -> exit;
+            case "door" -> door;
             case "floor", "default" -> floor; // treats default as the floor as well, can be changed later
             default -> defaultSprite;
         };

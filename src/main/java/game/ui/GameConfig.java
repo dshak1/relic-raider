@@ -78,7 +78,12 @@ public class GameConfig {
     /**
      * Duration (in ticks) that bonus rewards remain visible before disappearing.
      */
-    public static final int BONUS_REWARD_DURATION_TICKS = 10;
+    public static final int BONUS_REWARD_DURATION_TICKS = 20;
+    
+    /**
+     * Delay (in ticks) before a bonus reward respawns after disappearing.
+     */
+    public static final int BONUS_REWARD_RESPAWN_DELAY_TICKS = 10;
     
     
     // ========================
@@ -207,6 +212,9 @@ public class GameConfig {
 
     /** Path to the exit tile sprite image (level goal). */
     public static final String IMAGE_EXIT = "tile_exit.png";
+
+    /** Path to the door sprite image (locked exit). */
+    public static final String IMAGE_DOOR = "door.png";
 
     /** Path to the default placeholder sprite image, used when no other sprite is available. */
     public static final String IMAGE_DEFAULT = "default.png";

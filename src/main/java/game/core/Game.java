@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.ui.GameConfig;
 import game.ui.GameEndScreen;
 
 /**
@@ -59,10 +58,6 @@ public class Game {
 
     /** Timestamp in milliseconds when the player last took damage from a spike. */
     private long lastDamageTime = 0;
-
-    /** The wall tile blocking the exit; becomes passable after collecting all basic rewards */
-    private Position exitWallTile;
-
 
     /**
      * Private constructor for Game instances.
@@ -121,6 +116,9 @@ public class Game {
         // Process enemy movement with pathfinding integration
         processEnemyMovement();
 
+        // Update bonus rewards (check if they should disappear)
+        updateBonusRewards();
+
         // Handle entity interactions
         resolveCollisions();
 
@@ -138,11 +136,23 @@ public class Game {
     }
 
     /**
+     * Updates all bonus rewards, checking if they should disappear after their duration.
+     */
+    private void updateBonusRewards() {
+        for (Reward reward : rewards) {
+            if (reward instanceof game.reward.BonusReward) {
+                game.reward.BonusReward bonusReward = (game.reward.BonusReward) reward;
+                bonusReward.tick(map, enemies, rewards);  // Pass map, enemies, and rewards for collision checking
+            }
+        }
+    }
+
+    /**
      * Processes movement for all mobile enemies in the game.
      * Uses pathfinding algorithms if available, otherwise falls back to random movement.
      */
     private int enemyMovementTicks = 0;
-    private static final int ENEMY_MOVEMENT_DELAY = 7; // Move every 
+    private static final int ENEMY_MOVEMENT_DELAY = 21; // Move every 28 ticks (4x slower) 
     
     private void processEnemyMovement() {
         enemyMovementTicks++;
@@ -188,6 +198,15 @@ public class Game {
         
         for (Reward r : rewards) {
             System.out.println("Reward position: " + r.getPosition() + ", collected: " + r.isCollected());
+            
+            // Skip bonus rewards that are not active
+            if (r instanceof game.reward.BonusReward) {
+                game.reward.BonusReward bonusReward = (game.reward.BonusReward) r;
+                if (!bonusReward.isActive()) {
+                    continue;
+                }
+            }
+
             if (player.collidesWith(r) && !r.isCollected()) {
                 System.out.println("COLLISION DETECTED WITH REWARD!");
                 player.collect(r);
@@ -198,7 +217,6 @@ public class Game {
                 // Update basic collected counter for non-bonus rewards
                 if (!r.isBonus()) {
                     basicCollected++;
-                    unlockExitWall();
                 }
             }
         }
@@ -606,14 +624,9 @@ public class Game {
         map.getTile(new Position(mapHeight - 10 - 6, 6)).setBlocked(true);
 
         // Circular final room walls (approximation)
-        // Circular final room
         int centerRow = mapHeight / 2;
         int centerCol = mapWidth - 8;
         int radius = 5;
-
-        // Track wall tiles (optional, if you want to remove/open them later)
-        List<Position> circularWalls = new ArrayList<>();
-
         for (int r = centerRow - radius; r <= centerRow + radius; r++) {
             for (int c = centerCol - radius; c <= centerCol + radius; c++) {
                 int distSq = (r - centerRow) * (r - centerRow) + (c - centerCol) * (c - centerCol);
@@ -621,31 +634,20 @@ public class Game {
                     Position pos = new Position(r, c);
                     if (map.inBounds(pos) && !pos.equals(exit)) {
                         map.getTile(pos).setBlocked(true);
-                        circularWalls.add(pos); // track this wall
                     }
                 }
             }
         }
-
-        // Open entrance to circular room (exit path)
-        Position exitEntrance = new Position(exit.getRow(), exit.getCol() - 6);
-        map.getTile(exitEntrance).setBlocked(false);
-
-        // Optionally mark this specific wall tile for later removal/opening
-        Position exitWall = new Position(exit.getRow(), exit.getCol() - 6);
-        map.getTile(exitWall).setBlocked(false); // initially blocked
-
-        PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
-
-        // Create the game
+        // Create entrance to circular room
+        map.getTile(new Position(centerRow, centerCol - radius)).setBlocked(false);
+        
         Player player = new Player(entry);
         Game.Builder builder = Game.builder()
-                .setMap(map)
-                .setPlayer(player);
-
-        Game game = builder.build();
-        game.setExitWallTile(exitWall);
-
+            .setMap(map)
+            .setPlayer(player);
+        
+        // Add mobile enemies (red - skeletons/boulders) with A* pathfinding
+        PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
         
         // Enemy positions based on diagram
         Position[] enemyPositions = {
@@ -685,7 +687,7 @@ public class Game {
             if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry)) {
                 builder.addEnemy(new game.entity.StationaryEnemy(
                     "spike_" + (i + 1),
-                    GameConfig.SPIKE_TRAP_PENALTY,
+                    game.ui.GameConfig.SPIKE_TRAP_PENALTY,
                     pos
                 ));
             }
@@ -709,7 +711,7 @@ public class Game {
             if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry) && !pos.equals(exit)) {
                 builder.addReward(new game.reward.BasicReward(
                     pos,
-                    GameConfig.REGULAR_REWARD_VALUE
+                    game.ui.GameConfig.REGULAR_REWARD_VALUE
                 ));
             }
         }
@@ -720,15 +722,14 @@ public class Game {
             new Position(mapHeight - 3, mapWidth - 5)
         };
         
-        for (Position pos : bonusPositions) {
-            if (map.inBounds(pos) && map.isPassable(pos)) {
-                builder.addReward(new game.reward.BonusReward(
-                    pos,
-                    GameConfig.BONUS_REWARD_VALUE,
-                    null
-                ));
-            }
-        }
+        // Add bonus rewards (optional, high value) - place next to player start
+        Position bonusPos = new Position(entry.getRow(), entry.getCol() + 3);
+        builder.addReward(new game.reward.BonusReward(
+            bonusPos,
+            game.ui.GameConfig.BONUS_REWARD_VALUE,
+            game.ui.GameConfig.BONUS_REWARD_DURATION_TICKS,
+            game.ui.GameConfig.BONUS_REWARD_RESPAWN_DELAY_TICKS
+        ));
         
         return builder.build();
     }
@@ -781,48 +782,6 @@ public class Game {
     public List<Enemy> getEnemies() {
         return new java.util.ArrayList<>(enemies);
     }
-
-    /**
-     * Sets the wall tile that blocks the exit.
-     * 
-     * @param pos the position of the tile to unlock
-     */
-    public void setExitWallTile(Position pos) {
-        this.exitWallTile = pos;
-    }
-
-    /**
-     * Returns true if the player has collected all required basic rewards
-     * and the exit wall should be unlocked.
-     */
-    public boolean isExitUnlocked() {
-        return basicCollected >= basicToCollect;
-    }
-
-    private void unlockExitWall() {
-        if (exitWallTile != null && isExitUnlocked()) {
-            map.getTile(exitWallTile).setBlocked(false);
-        }
-    }
-
-    /**
-     * Checks if the player can move into a tile.
-     * 
-     * @param pos
-     * @return true or false the tile can be walked on
-     */
-    public boolean isTilePassable(Position pos) {
-        // Normal passable logic
-        if (map.isPassable(pos)) return true;
-
-        // Special case: allow player to pass through exit wall if unlocked
-        if (exitWallTile != null && pos.equals(exitWallTile) && isExitUnlocked()) {
-            return true;
-        }
-
-        return false;
-    }
-
 
     /**
      * Gets the list of rewards in the game.

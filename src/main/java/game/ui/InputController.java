@@ -11,6 +11,8 @@ import javafx.scene.input.KeyCode;
  */
 public class InputController {
     private Direction currentDirection = Direction.NONE;
+    private boolean pausePressed = false;
+    private boolean pauseKeyPressedThisFrame = false;
     
     /**
      * Handles a keyboard input event and updates the current direction.
@@ -24,25 +26,32 @@ public class InputController {
 
         // Set movement direction
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-            int keyCode = code.getCode();
-            if (keyCode == GameConfig.KEY_UP) {
+            if (code == KeyCode.UP || code == KeyCode.W) {
                 currentDirection = Direction.UP;
-            } else if (keyCode == GameConfig.KEY_DOWN) {
+            } else if (code == KeyCode.DOWN || code == KeyCode.S) {
                 currentDirection = Direction.DOWN;
-            } else if (keyCode == GameConfig.KEY_LEFT) {
+            } else if (code == KeyCode.LEFT || code == KeyCode.A) {
                 currentDirection = Direction.LEFT;
-            } else if (keyCode == GameConfig.KEY_RIGHT) {
+            } else if (code == KeyCode.RIGHT || code == KeyCode.D) {
                 currentDirection = Direction.RIGHT;
+            } else if (code == KeyCode.P || code == KeyCode.ESCAPE) {
+                // Pause key - only trigger once per press
+                if (!pausePressed) {
+                    pauseKeyPressedThisFrame = true;
+                    pausePressed = true;
+                }
             }
         }
 
         // Stop movement if key released
         else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
-            if (code.getCode() == GameConfig.KEY_UP && currentDirection == Direction.UP ||
-                code.getCode() == GameConfig.KEY_DOWN && currentDirection == Direction.DOWN ||
-                code.getCode() == GameConfig.KEY_LEFT && currentDirection == Direction.LEFT ||
-                code.getCode() == GameConfig.KEY_RIGHT && currentDirection == Direction.RIGHT) {
+            if ((code == KeyCode.UP || code == KeyCode.W) && currentDirection == Direction.UP ||
+                (code == KeyCode.DOWN || code == KeyCode.S) && currentDirection == Direction.DOWN ||
+                (code == KeyCode.LEFT || code == KeyCode.A) && currentDirection == Direction.LEFT ||
+                (code == KeyCode.RIGHT || code == KeyCode.D) && currentDirection == Direction.RIGHT) {
                 currentDirection = Direction.NONE;
+            } else if (code == KeyCode.P || code == KeyCode.ESCAPE) {
+                pausePressed = false;
             }
         }
     }
@@ -54,5 +63,27 @@ public class InputController {
      */
     public Direction getDirection() {
         return currentDirection;
+    }
+    
+    /**
+     * Checks if the pause key was pressed this frame.
+     * Call this once per frame and it will return true only once per press.
+     * 
+     * @return true if pause key was pressed this frame
+     */
+    public boolean isPausePressed() {
+        if (pauseKeyPressedThisFrame) {
+            pauseKeyPressedThisFrame = false;
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Resets the pause key state.
+     */
+    public void resetPause() {
+        pausePressed = false;
+        pauseKeyPressedThisFrame = false;
     }
 }
