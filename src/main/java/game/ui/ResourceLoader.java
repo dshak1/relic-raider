@@ -1,9 +1,6 @@
 package game.ui;
 
-import game.ui.GameConfig; //needed to get file paths later.
 import java.util.Map;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 import javafx.scene.image.Image;

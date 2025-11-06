@@ -5,6 +5,7 @@ import java.util.Map;
 
 import game.entity.Entity;
 import game.entity.Enemy;
+import game.entity.MobileEnemy;
 import game.entity.Player;
 import game.entity.StationaryEnemy;
 import game.reward.BasicReward;
@@ -49,7 +50,7 @@ public class SpriteManager {
         spriteCache.put(Player.class, ResourceLoader.loadImage(GameConfig.IMAGE_PLAYER));
         spriteCache.put(BasicReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BASIC));
         spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BONUS));
-        spriteCache.put(Enemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
+        spriteCache.put(MobileEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
         spriteCache.put(Reward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
         spriteCache.put(StationaryEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_SPIKES));
 
