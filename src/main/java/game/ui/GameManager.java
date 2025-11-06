@@ -117,14 +117,25 @@ public class GameManager {
     /**
      * Pauses the game loop.
      * <p>
-     * The game state remains as is; calling {@link #resumeGame()}
-     * will restart from the current state
+     * The game state remains as is; calling {@link #resumeFromPause()}
+     * will resume from the current state without resetting.
      * </p>
      */
     public void pauseGame(){
         running = false;
     }
 
+    /**
+     * Resumes the game from where it was paused.
+     * <p>
+     * Does not reset the game state - just resumes the game loop.
+     * </p>
+     */
+    public void resumeFromPause(){
+        running = true;
+        // gameLoop is already running, just need to set running flag
+    }
+    
     /**
      * Resumes the game from the start.
      * <p>

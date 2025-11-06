@@ -5,7 +5,6 @@ import game.entity.Enemy;
 import game.entity.Player;
 import game.map.Map;
 import game.map.Position;
-import game.reward.FinalReward;
 import game.reward.Reward;
 import game.ui.HUD;
 
@@ -222,14 +221,8 @@ public class Game {
                 System.out.println("New score: " + score);
                 r.onCollect(player);
                 
-                // Check if this is the final reward (unlocks door)
-                if (r instanceof game.reward.FinalReward) {
-                    finalRewardCollected = true;
-                    System.out.println("Final reward collected! Door is now open.");
-                }
-                
                 // Update basic collected counter for non-bonus rewards (for extra points only)
-                if (!r.isBonus() && !(r instanceof game.reward.FinalReward)) {
+                if (!r.isBonus() ) {
                     basicCollected++;
                 }
             }
@@ -262,10 +255,10 @@ public class Game {
     /**
      * Checks whether the player has satisfied all win conditions.
      *
-     * @return true if the player reached the exit and collected the final reward
+     * @return true if the player reached the exit and collected all basic rewards
      */
     public boolean checkWin() {
-        return player.atExit(map) && finalRewardCollected;
+        return player.atExit(map) && (basicCollected >= basicToCollect);
     }
 
 
@@ -357,6 +350,14 @@ public class Game {
      */
     public void setHUD(HUD hud) {
         this.hud = hud;
+    }
+    
+    /**
+     * Resets the internal timestamp used for elapsed time calculation.
+     * Should be called when resuming from pause to prevent time from jumping forward.
+     */
+    public void resetTimeStamp() {
+        lastUpdateMillis = System.currentTimeMillis();
     }
 
     /**
@@ -719,10 +720,6 @@ public class Game {
 
 
         Game game = builder.build();
-
-        // Place final reward at 8th column from right, 2nd row
-        Position finalRewardPos = new Position(1, mapWidth - 8);
-        builder.addReward(new FinalReward(finalRewardPos, GameConfig.FINAL_REWARD_VALUE, game));
         
         // Add mobile enemies (red - skeletons/boulders) with A* pathfinding
         PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
@@ -809,53 +806,7 @@ public class Game {
             GameConfig.BONUS_REWARD_RESPAWN_DELAY_TICKS
         ));
         
-        // Add final reward (golden idol) - required to unlock the door
-        // Place it in a central location, not too close to entry or exit
-        // Try multiple positions to find a valid one
-        Position finalRewardPos = null;
-        Position[] candidatePositions = {
-            new Position(mapHeight / 2 - 5, mapWidth / 2),      // Center-left
-            new Position(mapHeight / 2, mapWidth / 2 - 5),       // Center-up
-            new Position(mapHeight / 2 + 5, mapWidth / 2),      // Center-right
-            new Position(mapHeight / 2, mapWidth / 2 + 5),      // Center-down
-            new Position(mapHeight / 2 - 3, mapWidth / 2 - 3),  // Center-diagonal
-            new Position(10, 15),                                // Fallback position
-            new Position(15, 20),                                // Another fallback
-            new Position(20, 15)                                 // Last fallback
-        };
-        
-        for (Position pos : candidatePositions) {
-            if (map.inBounds(pos) && map.isPassable(pos) && 
-                !pos.equals(entry) && !pos.equals(exit)) {
-                finalRewardPos = pos;
-                break;
-            }
-        }
-        
-        // If we still haven't found a position, try finding any valid position
-        if (finalRewardPos == null) {
-            for (int row = 5; row < mapHeight - 5; row++) {
-                for (int col = 5; col < mapWidth - 5; col++) {
-                    Position pos = new Position(row, col);
-                    if (map.isPassable(pos) && !pos.equals(entry) && !pos.equals(exit)) {
-                        finalRewardPos = pos;
-                        break;
-                    }
-                }
-                if (finalRewardPos != null) break;
-            }
-        }
-        
-        // Add the final reward if we found a valid position
-        if (finalRewardPos != null) {
-            builder.addReward(new game.reward.FinalReward(
-                finalRewardPos,
-                100 // High value for final reward
-            ));
-            System.out.println("Final reward spawned at: " + finalRewardPos);
-        } else {
-            System.err.println("WARNING: Could not find valid position for final reward!");
-        }
+        // Final reward removed - door unlocks when all basic rewards are collected
         
         return builder.build();
     }

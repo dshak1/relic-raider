@@ -10,7 +10,6 @@ import game.entity.Player;
 import game.entity.StationaryEnemy;
 import game.reward.BasicReward;
 import game.reward.BonusReward;
-import game.reward.FinalReward;
 import game.reward.Reward;
 import javafx.scene.image.Image;
 
@@ -38,7 +37,6 @@ public class SpriteManager {
     private static Image entry;
     private static Image exit;
     private static Image door;
-    private static Image doorOpen;
     private static Image floor;
     private static Image defaultSprite;
 
@@ -53,7 +51,6 @@ public class SpriteManager {
         spriteCache.put(Player.class, ResourceLoader.loadImage(GameConfig.IMAGE_PLAYER));
         spriteCache.put(BasicReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BASIC));
         spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BONUS));
-        spriteCache.put(FinalReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
         spriteCache.put(MobileEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
         spriteCache.put(Reward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
         spriteCache.put(StationaryEnemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_SPIKES));
@@ -65,7 +62,6 @@ public class SpriteManager {
         entry = ResourceLoader.loadImage(GameConfig.IMAGE_ENTRY);
         exit = ResourceLoader.loadImage(GameConfig.IMAGE_EXIT);
         door = ResourceLoader.loadImage(GameConfig.IMAGE_DOOR);
-        doorOpen = ResourceLoader.loadImage(GameConfig.IMAGE_DOOR_OPEN);
 
         // Fallback
         defaultSprite = ResourceLoader.loadImage(GameConfig.IMAGE_DEFAULT);
@@ -88,10 +84,10 @@ public class SpriteManager {
     /**
      * Returns the tile sprite for the given type string.
      * <p>
-     * Supports "wall", "entry", "exit", "door", "doorOpen", "floor". Any other string returns the default sprite.
+     * Supports "wall", "entry", "exit", "door", "floor". Any other string returns the default sprite.
      * </p>
      *
-     * @param type the type of tile ("wall", "entry", "exit", "door", "doorOpen", "floor")
+     * @param type the type of tile ("wall", "entry", "exit", "door", "floor")
      * @return the corresponding {@link Image}, or default if unknown
      */
     public static Image getTileSprite(String type) {
@@ -100,7 +96,6 @@ public class SpriteManager {
             case "entry" -> entry;
             case "exit" -> exit;
             case "door" -> door;
-            case "dooropen" -> doorOpen;
             case "floor", "default" -> floor; // treats default as the floor as well, can be changed later
             default -> defaultSprite;
         };

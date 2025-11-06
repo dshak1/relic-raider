@@ -3,12 +3,10 @@ package game.ui;
 import javafx.scene.input.KeyEvent;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import game.core.Game;
 
@@ -45,6 +43,9 @@ public class GameWindow {
 
     /** Reference to game manager for coordinating setup mode */
     private GameManager gameManager;
+    
+    /** Whether the game is currently paused */
+    private boolean isPaused = false;
 
 
     /**
@@ -127,8 +128,8 @@ public class GameWindow {
             
             @Override
             public void handle(long now) {
-                // Update game logic only at the specified tick rate and when not in setup mode
-                if (!setupMode && now - lastTickTime >= TICK_INTERVAL_NS) {
+                // Update game logic only at the specified tick rate and when not in setup mode or paused
+                if (!setupMode && !isPaused && now - lastTickTime >= TICK_INTERVAL_NS) {
                     game.tick(inputController.getDirection());
                     lastTickTime = now;
                 }
@@ -159,6 +160,24 @@ public class GameWindow {
      */
     public void handleKeyInput(KeyEvent event) {
         inputController.handleKeyPress(event);
+        
+        // Check for pause key press (P or ESCAPE)
+        if (inputController.isPausePressed()) {
+            isPaused = !isPaused;
+            System.out.println("Game " + (isPaused ? "PAUSED" : "RESUMED"));
+            
+            // Also pause/resume game manager
+            if (gameManager != null) {
+                if (isPaused) {
+                    gameManager.pauseGame();
+                } else {
+                    // Resume without resetting (keep current state)
+                    // Reset timestamp to prevent time jump when resuming
+                    game.resetTimeStamp();
+                    gameManager.resumeFromPause();
+                }
+            }
+        }
         
         // Toggle setup mode with 'M' key
         if (event.getEventType() == KeyEvent.KEY_PRESSED && 

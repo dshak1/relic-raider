@@ -96,7 +96,7 @@ public class Map {
 
     /**
      * Sets the exit point position where the player must reach to win.
-     * Also marks the tile at that position as the exit and ensures it is passable.
+     * Also marks the tile at that position as the exit.
      *
      * @param exitPoint the position to set as exit point
      * @throws IllegalArgumentException if position is out of bounds
@@ -108,9 +108,7 @@ public class Map {
             );
         }
         this.exitPoint = exitPoint;
-        Tile exitTile = getTile(exitPoint);
-        exitTile.setExit(true);
-        exitTile.setBlocked(false); // Ensure exit is always passable
+        getTile(exitPoint).setExit(true);
     }
 
     /**
