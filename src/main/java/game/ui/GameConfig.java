@@ -216,6 +216,9 @@ public class GameConfig {
     /** Path to the door sprite image (locked exit). */
     public static final String IMAGE_DOOR = "door.png";
 
+    /** Path to the open door sprite image (unlocked exit). */
+    public static final String IMAGE_DOOR_OPEN = "tile_exit.png";
+
     /** Path to the default placeholder sprite image, used when no other sprite is available. */
     public static final String IMAGE_DEFAULT = "default.png";
 

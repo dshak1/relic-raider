@@ -49,8 +49,8 @@ public class GameCanvas {
      * @param map the {@link Map} to render
      */
     private void drawMap(Map map, boolean setupMode) {
-        // Check if exit is unlocked (all basic rewards collected)
-        boolean exitUnlocked = game.getBasicCollected() >= game.getBasicToCollect();
+        // Check if exit is unlocked (final reward collected)
+        boolean exitUnlocked = game.isFinalRewardCollected();
         
         if (setupMode) {
             // Setup mode: show entire map
@@ -69,12 +69,12 @@ public class GameCanvas {
                     } else if (map.isEntry(pos)) {
                         type = "entry";
                     } else if (map.isExit(pos)) {
-                        // If exit is unlocked, show floor instead of door
-                        // Otherwise show door sprite
+                        // If exit is unlocked, show open door sprite
+                        // Otherwise show closed door sprite
                         if (exitUnlocked) {
-                            type = "floor";
+                            type = "doorOpen"; // Use open door sprite when unlocked
                         } else {
-                            type = "door"; // Use door sprite when locked
+                            type = "door"; // Use closed door sprite when locked
                         }
                     } else {
                         type = "floor";
@@ -114,12 +114,12 @@ public class GameCanvas {
                     } else if (map.isEntry(pos)) {
                         type = "entry";
                     } else if (map.isExit(pos)) {
-                        // If exit is unlocked, show floor instead of door
-                        // Otherwise show door sprite
+                        // If exit is unlocked, show open door sprite
+                        // Otherwise show closed door sprite
                         if (exitUnlocked) {
-                            type = "floor";
+                            type = "doorOpen"; // Use open door sprite when unlocked
                         } else {
-                            type = "door"; // Use door sprite when locked
+                            type = "door"; // Use closed door sprite when locked
                         }
                     } else {
                         type = "floor";
@@ -158,6 +158,7 @@ public class GameCanvas {
                         drawEntity(reward, setupMode);
                     }
                 } else {
+                    // Draw all other rewards (BasicReward, FinalReward) statically
                     drawEntity(reward, setupMode);
                 }
             }
