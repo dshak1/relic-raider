@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.ui.GameConfig;
 import game.ui.GameEndScreen;
 
 /**
@@ -605,9 +606,14 @@ public class Game {
         map.getTile(new Position(mapHeight - 10 - 6, 6)).setBlocked(true);
 
         // Circular final room walls (approximation)
+        // Circular final room
         int centerRow = mapHeight / 2;
         int centerCol = mapWidth - 8;
         int radius = 5;
+
+        // Track wall tiles (optional, if you want to remove/open them later)
+        List<Position> circularWalls = new ArrayList<>();
+
         for (int r = centerRow - radius; r <= centerRow + radius; r++) {
             for (int c = centerCol - radius; c <= centerCol + radius; c++) {
                 int distSq = (r - centerRow) * (r - centerRow) + (c - centerCol) * (c - centerCol);
@@ -615,20 +621,31 @@ public class Game {
                     Position pos = new Position(r, c);
                     if (map.inBounds(pos) && !pos.equals(exit)) {
                         map.getTile(pos).setBlocked(true);
+                        circularWalls.add(pos); // track this wall
                     }
                 }
             }
         }
-        // Create entrance to circular room
-        map.getTile(new Position(centerRow, centerCol - radius)).setBlocked(false);
-        
+
+        // Open entrance to circular room (exit path)
+        Position exitEntrance = new Position(exit.getRow(), exit.getCol() - 6);
+        map.getTile(exitEntrance).setBlocked(false);
+
+        // Optionally mark this specific wall tile for later removal/opening
+        Position exitWall = new Position(exit.getRow(), exit.getCol() - 6);
+        map.getTile(exitWall).setBlocked(false); // initially blocked
+
+        PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
+
+        // Create the game
         Player player = new Player(entry);
         Game.Builder builder = Game.builder()
-            .setMap(map)
-            .setPlayer(player);
-        
-        // Add mobile enemies (red - skeletons/boulders) with A* pathfinding
-        PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
+                .setMap(map)
+                .setPlayer(player);
+
+        Game game = builder.build();
+        game.setExitWallTile(exitWall);
+
         
         // Enemy positions based on diagram
         Position[] enemyPositions = {
@@ -668,7 +685,7 @@ public class Game {
             if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry)) {
                 builder.addEnemy(new game.entity.StationaryEnemy(
                     "spike_" + (i + 1),
-                    game.ui.GameConfig.SPIKE_TRAP_PENALTY,
+                    GameConfig.SPIKE_TRAP_PENALTY,
                     pos
                 ));
             }
@@ -692,7 +709,7 @@ public class Game {
             if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry) && !pos.equals(exit)) {
                 builder.addReward(new game.reward.BasicReward(
                     pos,
-                    game.ui.GameConfig.REGULAR_REWARD_VALUE
+                    GameConfig.REGULAR_REWARD_VALUE
                 ));
             }
         }
@@ -707,7 +724,7 @@ public class Game {
             if (map.inBounds(pos) && map.isPassable(pos)) {
                 builder.addReward(new game.reward.BonusReward(
                     pos,
-                    game.ui.GameConfig.BONUS_REWARD_VALUE,
+                    GameConfig.BONUS_REWARD_VALUE,
                     null
                 ));
             }
