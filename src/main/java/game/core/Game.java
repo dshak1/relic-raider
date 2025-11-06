@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.ui.GameConfig;
 import game.ui.GameEndScreen;
 
 /**
@@ -58,6 +59,8 @@ public class Game {
 
     /** Timestamp in milliseconds when the player last took damage from a spike. */
     private long lastDamageTime = 0;
+
+    private List<Position> exitWallTiles = new ArrayList<>();
 
     /**
      * Private constructor for Game instances.
@@ -688,6 +691,23 @@ public class Game {
         Game.Builder builder = Game.builder()
             .setMap(map)
             .setPlayer(player);
+
+        
+        // Two tiles to the left of the exit
+        Position exitWall1 = new Position(exit.getRow(), exit.getCol() - 6);
+        Position exitWall2 = new Position(exit.getRow(), exit.getCol() - 7);
+
+        map.getTile(exitWall1).setBlocked(true);
+        map.getTile(exitWall2).setBlocked(true);
+
+        // Track both tiles for later unlocking
+        List<Position> exitWallTiles = new ArrayList<>();
+        exitWallTiles.add(exitWall1);
+        exitWallTiles.add(exitWall2);
+
+        Game game = builder.build();
+        game.setExitWallTiles(exitWallTiles);
+
         
         // Add mobile enemies (red - skeletons/boulders) with A* pathfinding
         PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
@@ -730,7 +750,7 @@ public class Game {
             if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry)) {
                 builder.addEnemy(new game.entity.StationaryEnemy(
                     "spike_" + (i + 1),
-                    game.ui.GameConfig.SPIKE_TRAP_PENALTY,
+                    GameConfig.SPIKE_TRAP_PENALTY,
                     pos
                 ));
             }
@@ -754,7 +774,7 @@ public class Game {
             if (map.inBounds(pos) && map.isPassable(pos) && !pos.equals(entry) && !pos.equals(exit)) {
                 builder.addReward(new game.reward.BasicReward(
                     pos,
-                    game.ui.GameConfig.REGULAR_REWARD_VALUE
+                    GameConfig.REGULAR_REWARD_VALUE
                 ));
             }
         }
@@ -769,9 +789,9 @@ public class Game {
         Position bonusPos = new Position(entry.getRow(), entry.getCol() + 3);
         builder.addReward(new game.reward.BonusReward(
             bonusPos,
-            game.ui.GameConfig.BONUS_REWARD_VALUE,
-            game.ui.GameConfig.BONUS_REWARD_DURATION_TICKS,
-            game.ui.GameConfig.BONUS_REWARD_RESPAWN_DELAY_TICKS
+            GameConfig.BONUS_REWARD_VALUE,
+            GameConfig.BONUS_REWARD_DURATION_TICKS,
+            GameConfig.BONUS_REWARD_RESPAWN_DELAY_TICKS
         ));
         
         return builder.build();
@@ -833,5 +853,17 @@ public class Game {
      */
     public List<Reward> getRewards() {
         return new java.util.ArrayList<>(rewards);
+    }
+
+    public void setExitWallTiles(List<Position> tiles) {
+        this.exitWallTiles = tiles;
+    }
+
+    private void unlockExitWall() {
+        if (exitWallTiles != null && basicCollected >= basicToCollect) {
+            for (Position pos : exitWallTiles) {
+                map.getTile(pos).setBlocked(false);
+            }
+        }
     }
 }
