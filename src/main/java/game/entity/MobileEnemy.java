@@ -18,7 +18,8 @@ import java.util.List;
  */
 public class MobileEnemy extends Enemy implements Movable {
     private PathfindingStrategy pathfinder;
-
+    /** Tracks last horizontal move direction for rendering */
+    private Direction lastHorizontalDirection = Direction.RIGHT;
     /**
      * Constructs a new mobile enemy. 
      * 
@@ -50,6 +51,15 @@ public class MobileEnemy extends Enemy implements Movable {
         }
 
         Position next = path.get(1);
+
+        // update facing based on the horizontal component of the path step
+        int curCol = getPosition().getCol();
+        int dc = next.getCol() - curCol;
+        if (dc < 0) {
+            lastHorizontalDirection = Direction.LEFT;
+        } else if (dc > 0) {
+            lastHorizontalDirection = Direction.RIGHT;
+        }
 
         if (map.inBounds(next) && map.isPassable(next)) {
             return next; // move if there is a valid path
@@ -86,9 +96,11 @@ public class MobileEnemy extends Enemy implements Movable {
                 break;
             case LEFT:
                 col -= 1;
+                lastHorizontalDirection = Direction.LEFT;
                 break;
             case RIGHT:
                 col += 1;
+                lastHorizontalDirection = Direction.RIGHT;
                 break;
             default:
                 return getPosition();
@@ -101,6 +113,13 @@ public class MobileEnemy extends Enemy implements Movable {
         }
         
         return getPosition();
+    }
+
+    /**
+     * Returns the last horizontal direction this enemy moved or attempted to move.
+     */
+    public Direction getLastHorizontalDirection() {
+        return lastHorizontalDirection;
     }
     
     /**

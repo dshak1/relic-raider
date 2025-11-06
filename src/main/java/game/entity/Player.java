@@ -16,6 +16,11 @@ import game.behaviour.Movable;
  */
 public class Player extends Entity implements Movable {
     private boolean alive = true;
+    /**
+     * Tracks the last horizontal direction the player attempted to move.
+     * Used by the rendering system to choose a left/right sprite.
+     */
+    private Direction lastHorizontalDirection = Direction.RIGHT;
     
     /**
      * Constructs a new player entity.
@@ -47,9 +52,13 @@ public class Player extends Entity implements Movable {
                 break;
             case LEFT:
                 col -= 1;
+                // record last horizontal input for sprite selection
+                lastHorizontalDirection = Direction.LEFT;
                 break;
             case RIGHT:
                 col += 1;
+                // record last horizontal input for sprite selection
+                lastHorizontalDirection = Direction.RIGHT;
                 break;
             default: // no valid user input
                 return getPosition();
@@ -62,6 +71,14 @@ public class Player extends Entity implements Movable {
         }
 
         return getPosition();
+    }
+
+    /**
+     * Returns the last horizontal direction the player attempted to move.
+     * Will be {@link Direction#LEFT} or {@link Direction#RIGHT} (defaults to RIGHT).
+     */
+    public Direction getLastHorizontalDirection() {
+        return lastHorizontalDirection;
     }
     
     /**

@@ -50,7 +50,7 @@ public class GameCanvas {
      */
     private void drawMap(Map map, boolean setupMode) {
         // Check if exit is unlocked (all basic rewards collected)
-        boolean exitUnlocked = game.getBasicCollected() >= game.getBasicToCollect();
+        boolean exitUnlocked = game.getBasicCollected() >= game.getBasicToCollect() || game.isFinalRewardCollected();
         
         if (setupMode) {
             // Setup mode: show entire map
@@ -69,10 +69,10 @@ public class GameCanvas {
                     } else if (map.isEntry(pos)) {
                         type = "entry";
                     } else if (map.isExit(pos)) {
-                        // If exit is unlocked, show floor instead of door
-                        // Otherwise show door sprite
+                        // If exit is unlocked, show open door sprite
+                        // Otherwise show closed door sprite
                         if (exitUnlocked) {
-                            type = "floor";
+                            type = "door_open";
                         } else {
                             type = "door"; // Use door sprite when locked
                         }
@@ -114,10 +114,10 @@ public class GameCanvas {
                     } else if (map.isEntry(pos)) {
                         type = "entry";
                     } else if (map.isExit(pos)) {
-                        // If exit is unlocked, show floor instead of door
-                        // Otherwise show door sprite
+                        // If exit is unlocked, show open door sprite
+                        // Otherwise show closed door sprite
                         if (exitUnlocked) {
-                            type = "floor";
+                            type = "door_open";
                         } else {
                             type = "door"; // Use door sprite when locked
                         }
@@ -208,19 +208,6 @@ public class GameCanvas {
     
         Image sprite = SpriteManager.getSprite(entity);
         gc.drawImage(sprite, x, y, tileSize, tileSize);
-    }
-
-    /**
-     * Helper method to draw an image tile at a given coordinate
-     */
-    private void drawTile(Image image, double x, double y, int tileSize) {
-        if (image != null) {
-            gc.drawImage(image, x, y, tileSize, tileSize);
-        } else {
-            // prototype fallback behaviour
-            gc.setFill(Color.WHITE);
-            gc.fillRect(x, y, tileSize, tileSize);
-        }
     }
 
     /**

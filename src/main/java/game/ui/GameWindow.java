@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import game.core.Game;
 
@@ -46,6 +47,9 @@ public class GameWindow {
     
     /** Whether the game is currently paused */
     private boolean isPaused = false;
+    
+    /** Pause screen overlay */
+    private PauseScreen pauseScreen;
 
 
     /**
@@ -99,7 +103,46 @@ public class GameWindow {
         canvasFX.widthProperty().bind(root.widthProperty());
         canvasFX.heightProperty().bind(root.heightProperty().subtract(hudContainer.heightProperty()));
 
-        scene = new Scene(root);
+        // Create pause screen
+        pauseScreen = new PauseScreen();
+        pauseScreen.hide();
+        
+        // Set up pause screen callbacks
+        pauseScreen.setOnResume(() -> {
+            isPaused = false;
+            pauseScreen.hide();
+            if (gameManager != null) {
+                game.resetTimeStamp();
+                gameManager.resumeFromPause();
+            }
+        });
+        
+        pauseScreen.setOnRestart(() -> {
+            isPaused = false;
+            pauseScreen.hide();
+            if (gameManager != null) {
+                gameManager.resumeGame(); // This resets and restarts the game
+            }
+        });
+        
+        pauseScreen.setOnMenu(() -> {
+            isPaused = false;
+            pauseScreen.hide();
+            if (gameManager != null) {
+                gameManager.pauseGame(); // Stop the game
+            }
+            if (timer != null) {
+                timer.stop(); // Stop the animation timer
+            }
+            // Return to main menu - this will be handled by GameApp
+            stage.close();
+        });
+
+        // Use StackPane to overlay pause screen on top
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(root, pauseScreen);
+
+        scene = new Scene(stackPane);
         stage.setScene(scene);
         stage.setResizable(true);
 
@@ -166,14 +209,19 @@ public class GameWindow {
             isPaused = !isPaused;
             System.out.println("Game " + (isPaused ? "PAUSED" : "RESUMED"));
             
-            // Also pause/resume game manager
-            if (gameManager != null) {
-                if (isPaused) {
+            // Show/hide pause screen and update stats
+            if (isPaused) {
+                pauseScreen.updateStats(game.getScore(), game.getElapsedTime());
+                pauseScreen.show();
+                if (gameManager != null) {
                     gameManager.pauseGame();
-                } else {
-                    // Resume without resetting (keep current state)
-                    // Reset timestamp to prevent time jump when resuming
-                    game.resetTimeStamp();
+                }
+            } else {
+                pauseScreen.hide();
+                // Resume without resetting (keep current state)
+                // Reset timestamp to prevent time jump when resuming
+                game.resetTimeStamp();
+                if (gameManager != null) {
                     gameManager.resumeFromPause();
                 }
             }

@@ -94,6 +94,16 @@ public class Position {
         return row == position.row && col == position.col;
     }
 
+    /**
+     * Returns a hash code value for this object.
+     * <p>
+     * The hash code is computed based on the {@code row} and {@code col} fields
+     * using a common algorithm to minimize collisions in hash-based collections
+     * such as {@link java.util.HashMap} and {@link java.util.HashSet}.
+     * </p>
+     *
+     * @return a hash code value for this object
+     */
     @Override
     public int hashCode() {
         int result = 17;

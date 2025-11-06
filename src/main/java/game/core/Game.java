@@ -5,6 +5,7 @@ import game.entity.Enemy;
 import game.entity.Player;
 import game.map.Map;
 import game.map.Position;
+import game.reward.FinalReward;
 import game.reward.Reward;
 import game.ui.HUD;
 
@@ -220,6 +221,11 @@ public class Game {
                 System.out.println("New score: " + score);
                 r.onCollect(player);
                 
+                // Check if this is the final reward
+                if (r instanceof FinalReward) {
+                    finalRewardCollected = true;
+                }
+                
                 // Update basic collected counter for non-bonus rewards (for extra points only)
                 if (!r.isBonus() ) {
                     basicCollected++;
@@ -254,10 +260,10 @@ public class Game {
     /**
      * Checks whether the player has satisfied all win conditions.
      *
-     * @return true if the player reached the exit and collected all basic rewards
+     * @return true if the player reached the exit and (collected all basic rewards OR collected the final reward)
      */
     public boolean checkWin() {
-        return player.atExit(map) && (basicCollected >= basicToCollect);
+        return player.atExit(map) && (basicCollected >= basicToCollect || finalRewardCollected);
     }
 
 
@@ -787,16 +793,25 @@ public class Game {
             }
         }
         
-        // Add bonus rewards (optional, high value) - place next to player start
-        Position bonusPos = new Position(entry.getRow(), entry.getCol() + 3);
-        builder.addReward(new game.reward.BonusReward(
-            bonusPos,
-            GameConfig.BONUS_REWARD_VALUE,
-            GameConfig.BONUS_REWARD_DURATION_TICKS,
-            GameConfig.BONUS_REWARD_RESPAWN_DELAY_TICKS
-        ));
+        // Add bonus rewards (optional, high value) - place in center of map
+        Position bonusPos = new Position(mapHeight / 2, mapWidth / 2);
+        if (map.inBounds(bonusPos) && map.isPassable(bonusPos)) {
+            builder.addReward(new game.reward.BonusReward(
+                bonusPos,
+                GameConfig.BONUS_REWARD_VALUE,
+                GameConfig.BONUS_REWARD_DURATION_TICKS,
+                GameConfig.BONUS_REWARD_RESPAWN_DELAY_TICKS
+            ));
+        }
         
-        // Final reward removed - door unlocks when all basic rewards are collected
+        // Add final reward in the middle of the map
+        Position finalRewardPos = new Position(mapHeight / 2, mapWidth / 2 + 5);  // Slightly offset from center to avoid overlap with totem
+        if (map.inBounds(finalRewardPos) && map.isPassable(finalRewardPos) && !finalRewardPos.equals(bonusPos)) {
+            builder.addReward(new game.reward.FinalReward(
+                finalRewardPos,
+                GameConfig.BONUS_REWARD_VALUE * 2  // High value for final reward
+            ));
+        }
         
         return builder.build();
     }
@@ -843,9 +858,10 @@ public class Game {
     }
 
     /**
-     * Checks whether the final reward has been collected (door is open).
+     * Checks if the final reward has been collected.
+     * When collected, unlocks the exit door equivalent to collecting all basic rewards.
      * 
-     * @return true if the final reward has been collected
+     * @return true if the final reward has been collected, false otherwise
      */
     public boolean isFinalRewardCollected() {
         return finalRewardCollected;
