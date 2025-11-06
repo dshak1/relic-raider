@@ -657,7 +657,7 @@ public class Game {
             new Position(20, 20),                 // Lower-right area
             new Position(18, 8)                   // Left-center area
         };
-        /* 
+        
         for (int i = 0; i < enemyPositions.length; i++) {
             Position pos = enemyPositions[i];
             if (map.inBounds(pos) && map.isPassable(pos)) {
@@ -668,7 +668,7 @@ public class Game {
                     pathfinder
                 ));
             }
-        }*/
+        }
         
         // Add stationary enemies (purple - spike traps)
         Position[] spikePositions = {
