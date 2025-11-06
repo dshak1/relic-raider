@@ -244,26 +244,54 @@ public class HowToPlayScreen extends VBox {
         // Style title text with larger, bold font
         titleText.setFont(Font.font("System", FontWeight.BOLD, 28));
         
-        // Style back button - updated to match other screens
-        Font buttonFont = Font.font("System", FontWeight.BOLD, 18);
+        // Style back button to match menu screen buttons
+        Font buttonFont = Font.font("System", FontWeight.BOLD, 20);
         backButton.setFont(buttonFont);
-        backButton.setPrefWidth(200);
-        backButton.setPrefHeight(45);
-        backButton.setStyle("-fx-background-color: #2a2a3e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FFD700; -fx-border-width: 2; -fx-border-radius: 5;");
+        backButton.setPrefWidth(250);
+        backButton.setPrefHeight(60);
         
-        // Hover effect
-        backButton.setOnMouseEntered(e -> backButton.setStyle("-fx-background-color: #3a3a4e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FFD700; -fx-border-width: 2; -fx-border-radius: 5;"));
-        backButton.setOnMouseExited(e -> backButton.setStyle("-fx-background-color: #2a2a3e; -fx-text-fill: #FFFFFF; -fx-background-radius: 5; -fx-border-color: #FFD700; -fx-border-width: 2; -fx-border-radius: 5;"));
+        // Match menu button style
+        String buttonStyle = 
+            "-fx-background-color: #D4B896; " +
+            "-fx-border-color: #6A5036; " +
+            "-fx-border-width: 3; " +
+            "-fx-border-radius: 10; " +
+            "-fx-background-radius: 10; " +
+            "-fx-text-fill: #2C2C2C; " +
+            "-fx-font-size: 20; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 15 40 15 40;";
         
-        // Style the entire screen - updated colors to match other screens
-        this.setStyle("-fx-background-color: #1a1a2e; -fx-text-fill: #FFFFFF;");
+        String buttonHoverStyle = 
+            "-fx-background-color: #E5C9A7; " +
+            "-fx-border-color: #6A5036; " +
+            "-fx-border-width: 3; " +
+            "-fx-border-radius: 10; " +
+            "-fx-background-radius: 10; " +
+            "-fx-text-fill: #2C2C2C; " +
+            "-fx-font-size: 20; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 15 40 15 40;";
         
-        // Style text sections for better readability
-        controlsText.setStyle("-fx-fill: #E0E0E0;");
-        objectivesText.setStyle("-fx-fill: #E0E0E0;");
-        enemiesText.setStyle("-fx-fill: #E0E0E0;");
-        rewardsText.setStyle("-fx-fill: #E0E0E0;");
-        titleText.setStyle("-fx-fill: #FFD700; -fx-effect: dropshadow(three-pass-box, rgba(255,215,0,0.6), 8, 0, 0, 0);"); // Gold color for title
+        backButton.setStyle(buttonStyle);
+        backButton.setOnMouseEntered(e -> backButton.setStyle(buttonHoverStyle));
+        backButton.setOnMouseExited(e -> backButton.setStyle(buttonStyle));
+        
+        // Style the entire screen to match menu background
+        this.setStyle(
+            "-fx-background-color: black;" +
+            "-fx-background-image: url('/assets/sprites/menu_background.png');" +
+            "-fx-background-size: 100% auto;" +
+            "-fx-background-position: center;" +
+            "-fx-background-repeat: no-repeat;"
+        );
+        
+        // Style text sections to match menu theme - darker text for readability on background
+        controlsText.setStyle("-fx-fill: #D4B896;");
+        objectivesText.setStyle("-fx-fill: #D4B896;");
+        enemiesText.setStyle("-fx-fill: #D4B896;");
+        rewardsText.setStyle("-fx-fill: #D4B896;");
+        titleText.setStyle("-fx-fill: #E5C9A7; -fx-effect: dropshadow(three-pass-box, rgba(106,80,54,0.8), 8, 0, 0, 0);"); // Lighter tan for title
     }
     
     /**
