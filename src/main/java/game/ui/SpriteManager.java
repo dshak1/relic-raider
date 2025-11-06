@@ -6,6 +6,7 @@ import java.util.Map;
 import game.entity.Entity;
 import game.entity.Enemy;
 import game.entity.Player;
+import game.entity.StationaryEnemy;
 import game.reward.BasicReward;
 import game.reward.BonusReward;
 import game.reward.Reward;
@@ -50,6 +51,7 @@ public class SpriteManager {
         spriteCache.put(BonusReward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_BONUS));
         spriteCache.put(Enemy.class, ResourceLoader.loadImage(GameConfig.IMAGE_ENEMY));
         spriteCache.put(Reward.class, ResourceLoader.loadImage(GameConfig.IMAGE_REWARD_FINAL));
+        spriteCache.put(StationaryEnemy.class, ResourceLoader.loadImage("spikes.png"));
 
 
         // Tile sprites

@@ -190,6 +190,8 @@ public class GameConfig {
     /** Path to the enemy sprite image. */
     public static final String IMAGE_ENEMY = "enemy.png";
 
+    public static final String IMAGE_SPIKES = "spikes.png";
+
     /** Path to the basic reward (coin) sprite image. */
     public static final String IMAGE_REWARD_BASIC = "reward_basic.png";
 
