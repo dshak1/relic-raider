@@ -80,7 +80,7 @@ public class GameTest {
     void testGameBuilderWithRewards() {
         BasicReward basicReward = new BasicReward(new Position(2, 2), 10);
         BonusReward bonusReward = new BonusReward(new Position(3, 3), 25, 
-            Duration.ofSeconds(30));
+            300, 100);
         
         game = Game.builder()
             .setMap(map)
