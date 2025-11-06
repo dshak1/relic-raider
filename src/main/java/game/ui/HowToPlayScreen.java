@@ -263,7 +263,7 @@ public class HowToPlayScreen extends VBox {
         );
         
         // Overall screen background
-        this.setStyle("-fx-background-color: #272729ff;"); // deep dark background
+        this.setStyle("-fx-background-color: #532c11ff;"); // deep dark background
         
         // ScrollPane background
         contentScrollPane.setStyle(
