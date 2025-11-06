@@ -149,8 +149,17 @@ public class GameCanvas {
      */
     private void drawEntities(Game game, boolean setupMode) {
         for (Reward reward : game.getRewards()) {
+            // Only draw rewards that haven't been collected
             if (!reward.isCollected()) {
-                drawEntity(reward, setupMode);
+                // For bonus rewards, also check if they're active
+                if (reward instanceof game.reward.BonusReward) {
+                    game.reward.BonusReward bonusReward = (game.reward.BonusReward) reward;
+                    if (bonusReward.isActive()) {
+                        drawEntity(reward, setupMode);
+                    }
+                } else {
+                    drawEntity(reward, setupMode);
+                }
             }
         }
     
