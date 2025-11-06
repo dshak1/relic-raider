@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.ui.GameConfig;
-import game.ui.GameEndScreen;
 
 /**
  * The {@code Game} class represents the main controller for gameplay.
@@ -717,9 +716,6 @@ public class Game {
         List<Position> exitWallTiles = new ArrayList<>();
         exitWallTiles.add(exitWall1);
         exitWallTiles.add(exitWall2);
-
-
-        Game game = builder.build();
         
         // Add mobile enemies (red - skeletons/boulders) with A* pathfinding
         PathfindingStrategy pathfinder = new game.behaviour.AStarPathfinding();
@@ -790,12 +786,6 @@ public class Game {
                 ));
             }
         }
-        
-        // Add bonus rewards (yellow - treasure chests)
-        Position[] bonusPositions = {
-            new Position(5, 5),
-            new Position(mapHeight - 3, mapWidth - 5)
-        };
         
         // Add bonus rewards (optional, high value) - place next to player start
         Position bonusPos = new Position(entry.getRow(), entry.getCol() + 3);
