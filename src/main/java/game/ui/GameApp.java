@@ -32,6 +32,7 @@ public class GameApp extends Application {
         Scene menuScene = new Scene(menu, 800, 600);
         primaryStage.setScene(menuScene);
         primaryStage.setTitle(GameConfig.GAME_TITLE);
+        primaryStage.setResizable(false);  // fixes window size
         primaryStage.show();
     }
 

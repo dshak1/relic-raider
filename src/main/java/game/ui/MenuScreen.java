@@ -1,10 +1,12 @@
 package game.ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.FontWeight;
 
 /**
  * The {@code MenuScreen} class provides the main menu interface that players see when launching the game.
@@ -32,8 +34,8 @@ public class MenuScreen extends VBox {
     /** Button to exit the application */
     private Button quitButton;
     
-    /** Text displaying the game title */
-    private Text titleText;
+    /** Image displaying the game title */
+    private javafx.scene.image.ImageView titleImage;
     
     /** Callback invoked when the player clicks "Play" */
     private Runnable onStartGameCallback;
@@ -119,8 +121,27 @@ public class MenuScreen extends VBox {
      * </p>
      */
     private void initializeComponents() {
-        // Initialize title text with game name from configuration
-        titleText = new Text(GameConfig.GAME_TITLE);
+        // Initialize title image with error checking
+        try {
+            javafx.scene.image.Image titleImg = ResourceLoader.loadImage("title.png");
+            if (titleImg != null) {
+                System.out.println("Title image loaded successfully");
+                System.out.println("Image width: " + titleImg.getWidth());
+                System.out.println("Image height: " + titleImg.getHeight());
+            } else {
+                System.out.println("ERROR: Title image is null");
+            }
+            titleImage = new javafx.scene.image.ImageView(titleImg);
+            titleImage.setPreserveRatio(true);
+            titleImage.setFitWidth(350);
+            
+            // Add visible border to debug
+            titleImage.setStyle("-fx-border-color: red; -fx-border-width: 3;");
+            
+        } catch (Exception e) {
+            System.out.println("ERROR loading title image: " + e.getMessage());
+            e.printStackTrace();
+        }
         
         // Initialize menu buttons
         playButton = new Button("Play");
@@ -141,18 +162,47 @@ public class MenuScreen extends VBox {
      * </p>
      */
     private void styleComponents() {
-        // Style title text with larger font
-        titleText.setFont(Font.font(32));
         
-        // Style buttons with consistent font size
-        Font buttonFont = Font.font(18);
-        playButton.setFont(buttonFont);
-        howToPlayButton.setFont(buttonFont);
-        quitButton.setFont(buttonFont);
+        // Style buttons with custom appearance
+        String buttonStyle = 
+            "-fx-background-color: #D4B896; " +
+            "-fx-border-color: #6A5036; " +
+            "-fx-border-width: 3; " +
+            "-fx-border-radius: 10; " +
+            "-fx-background-radius: 10; " +
+            "-fx-text-fill: #2C2C2C; " +
+            "-fx-font-size: 20; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 15 40 15 40;";
+        
+        String buttonHoverStyle = 
+            "-fx-background-color: #E5C9A7; " +
+            "-fx-border-color: #6A5036; " +
+            "-fx-border-width: 3; " +
+            "-fx-border-radius: 10; " +
+            "-fx-background-radius: 10; " +
+            "-fx-text-fill: #2C2C2C; " +
+            "-fx-font-size: 20; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 15 40 15 40;";
+        
+        playButton.setStyle(buttonStyle);
+        howToPlayButton.setStyle(buttonStyle);
+        quitButton.setStyle(buttonStyle);
+        
+        // Add hover effects
+        playButton.setOnMouseEntered(e -> playButton.setStyle(buttonHoverStyle));
+        playButton.setOnMouseExited(e -> playButton.setStyle(buttonStyle));
+        
+        howToPlayButton.setOnMouseEntered(e -> howToPlayButton.setStyle(buttonHoverStyle));
+        howToPlayButton.setOnMouseExited(e -> howToPlayButton.setStyle(buttonStyle));
+        
+        quitButton.setOnMouseEntered(e -> quitButton.setStyle(buttonHoverStyle));
+        quitButton.setOnMouseExited(e -> quitButton.setStyle(buttonStyle));
         
         // Set consistent button dimensions
-        double buttonWidth = 150;
-        double buttonHeight = 40;
+        double buttonWidth = 250;
+        double buttonHeight = 60;
         
         playButton.setPrefWidth(buttonWidth);
         howToPlayButton.setPrefWidth(buttonWidth);
@@ -172,17 +222,46 @@ public class MenuScreen extends VBox {
      * </p>
      */
     private void layoutComponents() {
-        // Configure VBox layout properties
+        // Configure main VBox layout properties
         this.setAlignment(Pos.CENTER);
-        this.setSpacing(20);
+        this.setPadding(new Insets(20));
         
-        // Add all components to the VBox in display order
-        this.getChildren().addAll(
-            titleText,
+        // Set fixed size to match scene dimensions
+        this.setPrefSize(800, 600);
+        this.setMinSize(800, 600);
+        this.setMaxSize(800, 600);
+        
+        // Add background image with proper sizing
+        this.setStyle(
+            "-fx-background-color: black;" +
+            "-fx-background-image: url('/assets/sprites/menu_background.png');" +
+            "-fx-background-size: 100% auto;" +
+            "-fx-background-position: center;" +
+            "-fx-background-repeat: no-repeat;"
+        );
+        
+        // Create a separate VBox for the buttons with tight spacing
+        VBox buttonGroup = new VBox(15);  // 15 pixels between buttons
+        buttonGroup.setAlignment(Pos.CENTER);
+        buttonGroup.getChildren().addAll(
             playButton,
             howToPlayButton,
             quitButton
         );
+        
+        // Add title and button group to main VBox with custom spacing
+        this.setSpacing(30);  // 40 pixels between title and button group
+        this.getChildren().addAll(
+            titleImage,
+            buttonGroup
+        );
+        
+        // Debug output
+        System.out.println("Children added to VBox");
+        System.out.println("Number of children: " + this.getChildren().size());
+        System.out.println("Title image visible: " + titleImage.isVisible());
+        System.out.println("Title image managed: " + titleImage.isManaged());
+        System.out.println("Title image fit width: " + titleImage.getFitWidth());
     }
     
     /**
