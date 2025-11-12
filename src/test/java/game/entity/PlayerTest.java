@@ -3,6 +3,9 @@ package game.entity;
 import game.core.Direction;
 import game.map.Map;
 import game.map.Position;
+import game.reward.BasicReward;
+import game.reward.BonusReward;
+import game.reward.Reward;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -125,6 +128,89 @@ public class PlayerTest {
         // assert that the player's position remained the same, cannot move outside of the map
         assertEquals(topPos.getRow(), nextPos.getRow());
         assertEquals(topPos.getCol(), nextPos.getCol());
+    }
+        
+    @Test
+    public void testCollectBasicReward() {
+        BasicReward reward = new BasicReward(new Position(5, 5), 1);
+        Reward.resetCounters(); // reset the collected counters to zero
+
+        // assert that the reward has not been collected
+        assertFalse(reward.isCollected());
+
+        player.collect(reward);
+
+		// assert that the reward has been collected
+        assertTrue(reward.isCollected());
+    }
+    
+    @Test
+    public void testCollectBonusReward() {
+        BonusReward reward = new BonusReward(new Position(5, 5), 1, 5, 5);
+        Reward.resetCounters(); // reset the collected counters to zero
+
+        // assert that the reward has not been collected
+        assertFalse(reward.isCollected());
+
+        player.collect(reward);
+
+		// assert that the reward has been collected
+        assertTrue(reward.isCollected());
+
+    }
+    
+    @Test
+    public void testMoveToValidPosition() {
+        Position startPos = new Position(5, 5);
+        Position targetPos = new Position(6, 6);
+        player = new Player(startPos);
+
+        player.moveTo(targetPos);
+
+		// assert that the player has moved to the target position
+        assertEquals(targetPos.getRow(), player.getPosition().getRow());
+        assertEquals(targetPos.getCol(), player.getPosition().getCol());
+    }
+
+    @Test
+    public void testWhenPlayerIsAtExit() {
+        Position exitPos = new Position(5, 5);
+        map.setExitPoint(exitPos);
+        player.moveTo(exitPos);
+				
+		// assert that the player is at the exit
+        assertTrue(player.atExit(map));
+    }
+
+    @Test
+    public void testAtExitWhenPlayerIsNotAtExit() {
+        Position exitPos = new Position(5, 5);
+        Position playerPos = new Position(3, 3);
+        map.setExitPoint(exitPos);
+        player.moveTo(playerPos);
+
+		// assert that the player is not at the exit
+        assertFalse(player.atExit(map));
+    }
+
+    @Test
+    public void testSetPlayerNotAlive() {
+        player.setAlive(false);
+
+		// assert that the player is not alive
+        assertFalse(player.isAlive());
+    }
+
+    @Test
+    public void testSetPlayerAlive() {
+        player.setAlive(false);
+        // assert that the player is not alive
+        assertTrue(!player.isAlive());
+
+        player.setAlive(true);
+
+		// assert that the player is alive
+        assertTrue(player.isAlive());
     }
 
 }
