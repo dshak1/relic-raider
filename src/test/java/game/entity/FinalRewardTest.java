@@ -35,7 +35,7 @@ public class FinalRewardTest {
 
     @Test
     public void testFinalRewardIsNotRespawnable() {
-        // final reward shouldn't respawn, once collected, the level ends
+        // final reward shouldn't respawn
         assertFalse(finalReward.isRespawnable());
     }
 
@@ -50,6 +50,7 @@ public class FinalRewardTest {
         
         finalReward.onCollect(player);
         
+        // should be marked as collected
         assertTrue(finalReward.isCollected());
     }
 
@@ -71,12 +72,6 @@ public class FinalRewardTest {
         assertDoesNotThrow(() -> {
             finalReward.onCollect(player);
         });
-    }
-
-    @Test
-    public void testFinalRewardRespawnStatus() {
-        // final reward should not respawn
-        assertFalse(finalReward.isRespawnable());
     }
 
 }
