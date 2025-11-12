@@ -9,6 +9,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link game.entity.MobileEnemy} class.
+ *
+ * Covers construction, movement, interaction with the player, and
+ * respect for map obstacles.
+ */
 public class MobileEnemyTest {
     private MobileEnemy enemy;
     private Map map;

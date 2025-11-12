@@ -6,6 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link game.entity.StationaryEnemy} class (spike traps).
+ *
+ * Ensures construction, damage properties, stationary behavior, and contact effects behave as expected.
+ */
 public class StationaryEnemyTest {
     private StationaryEnemy enemy;
 

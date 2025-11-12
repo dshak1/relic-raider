@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for the Player class.
- * Tests cover construction, movement logic, map boundaries, reward collection, 
- * exit detection, and alive state management.
+ * Unit tests for the {@link game.entity.Player} class.
+ *
+ * Covers movement decisions, boundary handling, reward collection, exit detection, and alive state.
  */
 public class PlayerTest {
     private Player player;

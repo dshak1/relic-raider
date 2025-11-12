@@ -8,6 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link game.reward.FinalReward} class.
+ *
+ * Verifies final-reward construction, collection behaviour, and integration with reward counters.
+ */
 public class FinalRewardTest {
     private FinalReward finalReward;
     private Player player;
