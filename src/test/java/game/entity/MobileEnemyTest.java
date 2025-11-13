@@ -114,4 +114,163 @@ public class MobileEnemyTest {
         // enemy should either stay in place or move to an alternative path
         assertTrue(map.isPassable(nextPos) || nextPos.equals(enemyPos));
     }
+    
+    @Test
+    public void testDecideNext_CallsPathfindingCorrectly() {
+        map.createBorder();
+        Position enemyPos = new Position(5, 5);
+        Position playerPos = new Position(5, 8);
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // Enemy should move toward player using pathfinding
+        assertNotNull(nextPos);
+        assertTrue(map.inBounds(nextPos));
+        assertTrue(map.isPassable(nextPos));
+        // Should be closer to player or at least valid
+        assertNotEquals(enemyPos, nextPos, "Enemy should move toward player");
+    }
+    
+    @Test
+    public void testDecideNext_NoPathAvailable_StaysInPlace() {
+        map.createBorder();
+        Position enemyPos = new Position(5, 5);
+        Position playerPos = new Position(5, 8);
+        
+        // Block all paths to player
+        map.getTile(new Position(5, 6)).setBlocked(true);
+        map.getTile(new Position(5, 7)).setBlocked(true);
+        map.getTile(new Position(4, 5)).setBlocked(true);
+        map.getTile(new Position(4, 6)).setBlocked(true);
+        map.getTile(new Position(4, 7)).setBlocked(true);
+        map.getTile(new Position(4, 8)).setBlocked(true);
+        map.getTile(new Position(6, 5)).setBlocked(true);
+        map.getTile(new Position(6, 6)).setBlocked(true);
+        map.getTile(new Position(6, 7)).setBlocked(true);
+        map.getTile(new Position(6, 8)).setBlocked(true);
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // Enemy should stay in place when no path exists
+        assertEquals(enemyPos, nextPos, "Enemy should stay in place when no path exists");
+    }
+    
+    @Test
+    public void testDecideNext_PathfindingWithNullPath_StaysInPlace() {
+        map.createBorder();
+        Position enemyPos = new Position(5, 5);
+        Position playerPos = new Position(5, 5); // Same position
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // When path is null or too short, should stay in place
+        assertEquals(enemyPos, nextPos, "Enemy should stay when path is null or too short");
+    }
+    
+    @Test
+    public void testDecideNext_UpdatesLastHorizontalDirection() {
+        map.createBorder();
+        Position enemyPos = new Position(5, 5);
+        Position playerPos = new Position(5, 8); // Player to the right
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // If enemy moves right, direction should be RIGHT
+        if (nextPos.getCol() > enemyPos.getCol()) {
+            assertEquals(Direction.RIGHT, enemy.getLastHorizontalDirection(),
+                "Last horizontal direction should be RIGHT when moving right");
+        } else if (nextPos.getCol() < enemyPos.getCol()) {
+            assertEquals(Direction.LEFT, enemy.getLastHorizontalDirection(),
+                "Last horizontal direction should be LEFT when moving left");
+        }
+    }
+    
+    @Test
+    public void testMoveTo_Functionality() {
+        Position initialPos = new Position(5, 5);
+        Position newPos = new Position(6, 6);
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, initialPos, new AStarPathfinding());
+        enemy.moveTo(newPos);
+        
+        assertEquals(newPos, enemy.getPosition(), "Enemy position should update after moveTo");
+    }
+    
+    @Test
+    public void testPathfinderDependencyInjection() {
+        AStarPathfinding pathfinder = new AStarPathfinding();
+        Position enemyPos = new Position(5, 5);
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, pathfinder);
+        
+        assertNotNull(enemy.getPathfinder(), "Pathfinder should be set");
+        assertEquals(pathfinder, enemy.getPathfinder(), "Pathfinder should be the injected instance");
+    }
+    
+    @Test
+    public void testDecideNext_MovementTowardPlayer() {
+        map.createBorder();
+        Position enemyPos = new Position(3, 3);
+        Position playerPos = new Position(3, 7);
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // Enemy should move toward player (rightward in this case)
+        assertTrue(nextPos.getCol() >= enemyPos.getCol(),
+            "Enemy should move toward player horizontally");
+        assertTrue(map.inBounds(nextPos));
+        assertTrue(map.isPassable(nextPos));
+    }
+    
+    @Test
+    public void testDecideNext_MovementTowardPlayerVertical() {
+        map.createBorder();
+        Position enemyPos = new Position(3, 5);
+        Position playerPos = new Position(7, 5);
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // Enemy should move toward player (downward in this case)
+        assertTrue(nextPos.getRow() >= enemyPos.getRow(),
+            "Enemy should move toward player vertically");
+        assertTrue(map.inBounds(nextPos));
+        assertTrue(map.isPassable(nextPos));
+    }
+    
+    @Test
+    public void testDecideNext_OutOfBoundsTarget_HandlesGracefully() {
+        map.createBorder();
+        Position enemyPos = new Position(5, 5);
+        Position playerPos = new Position(-1, -1); // Out of bounds
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // Should handle gracefully - either stay in place or return valid position
+        assertNotNull(nextPos);
+        assertTrue(map.inBounds(nextPos) || nextPos.equals(enemyPos),
+            "Should return valid position or stay in place");
+    }
+    
+    @Test
+    public void testDecideNext_BlockedTarget_HandlesGracefully() {
+        map.createBorder();
+        Position enemyPos = new Position(5, 5);
+        Position playerPos = new Position(5, 6);
+        
+        // Block the target position
+        map.getTile(playerPos).setBlocked(true);
+        
+        MobileEnemy enemy = new MobileEnemy("test", 1, enemyPos, new AStarPathfinding());
+        Position nextPos = enemy.decideNext(map, playerPos);
+        
+        // Should handle gracefully - pathfinding should return null, enemy stays in place
+        assertEquals(enemyPos, nextPos, "Enemy should stay in place when target is blocked");
+    }
 }
