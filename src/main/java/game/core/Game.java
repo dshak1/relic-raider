@@ -813,6 +813,17 @@ public class Game {
             ));
         }
         
+        // Fix unreachable floor tiles near the top (row 1, columns 23-24)
+        // These tiles are isolated and unreachable, so convert them to walls
+        Position unreachable1 = new Position(1, 23);
+        Position unreachable2 = new Position(1, 24);
+        if (map.inBounds(unreachable1)) {
+            map.getTile(unreachable1).setBlocked(true);
+        }
+        if (map.inBounds(unreachable2)) {
+            map.getTile(unreachable2).setBlocked(true);
+        }
+        
         return builder.build();
     }
 
