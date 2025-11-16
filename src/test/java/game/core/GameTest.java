@@ -399,6 +399,105 @@ public class GameTest {
     }
     
     @Test
+    void testCheckWin_AtExit_ExactBasicRewardsCollected() {
+        BasicReward reward1 = new BasicReward(new Position(2, 1), 10);
+        BasicReward reward2 = new BasicReward(new Position(3, 1), 10);
+        
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .addReward(reward1)
+            .addReward(reward2)
+            .setBasicToCollect(2)
+            .build();
+        
+        game.start();
+        
+        // Collect exactly the required amount
+        player.setPosition(reward1.getPosition());
+        game.resolveCollisions();
+        player.setPosition(reward2.getPosition());
+        game.resolveCollisions();
+        
+        // Move to exit
+        player.setPosition(map.getExitPoint());
+        
+        // Should win: at exit AND basicCollected == basicToCollect
+        assertTrue(game.checkWin(), "Should win when exact rewards collected and at exit");
+    }
+    
+    @Test
+    void testCheckWin_AtExit_MoreThanRequiredRewards() {
+        BasicReward reward1 = new BasicReward(new Position(2, 1), 10);
+        BasicReward reward2 = new BasicReward(new Position(3, 1), 10);
+        BasicReward reward3 = new BasicReward(new Position(4, 1), 10);
+        
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .addReward(reward1)
+            .addReward(reward2)
+            .addReward(reward3)
+            .setBasicToCollect(2) // Need 2, collect 3
+            .build();
+        
+        game.start();
+        
+        // Collect more than required
+        player.setPosition(reward1.getPosition());
+        game.resolveCollisions();
+        player.setPosition(reward2.getPosition());
+        game.resolveCollisions();
+        player.setPosition(reward3.getPosition());
+        game.resolveCollisions();
+        
+        player.setPosition(map.getExitPoint());
+        
+        // Should win: basicCollected (3) >= basicToCollect (2)
+        assertTrue(game.checkWin(), "Should win when more than required rewards collected");
+    }
+    
+    @Test
+    void testCheckWin_NotAtExit_ButHasFinalReward() {
+        game.reward.FinalReward finalReward = new game.reward.FinalReward(new Position(2, 1), 100);
+        
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .addReward(finalReward)
+            .build();
+        
+        game.start();
+        
+        // Collect final reward but don't reach exit
+        player.setPosition(finalReward.getPosition());
+        game.resolveCollisions();
+        player.setPosition(new Position(1, 1)); // Not at exit
+        
+        // Should not win: has final reward but not at exit
+        assertFalse(game.checkWin(), "Should not win if not at exit even with final reward");
+    }
+    
+    @Test
+    void testCheckWin_AtExit_NoRewardsCollected_NoFinalReward_ReturnsFalse() {
+        // Test the branch: atExit == true && basicCollected < basicToCollect && !finalRewardCollected
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .setBasicToCollect(1) // Need 1 reward
+            .build();
+        
+        game.start();
+        
+        // Move to exit without collecting any rewards
+        player.setPosition(map.getExitPoint());
+        
+        // Should not win: at exit but no rewards collected and no final reward
+        assertFalse(game.checkWin(), 
+            "Should not win when at exit but no rewards collected and no final reward");
+    }
+    
+    @Test
     void testCheckLose_PlayerNotAlive_ReturnsTrue() {
         game = Game.builder()
             .setMap(map)
@@ -627,5 +726,205 @@ public class GameTest {
         // Score should not change if bonus reward is inactive
         assertEquals(initialScore, game.getScore(), 
             "Score should not change when collecting inactive bonus reward");
+    }
+    
+    // ==================== Additional Coverage Tests ====================
+    
+    @Test
+    void testTick_WinCondition_CallsEnd() {
+        BasicReward reward = new BasicReward(new Position(1, 1), 10);
+        
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .addReward(reward)
+            .setBasicToCollect(1)
+            .build();
+        
+        game.start();
+        
+        // Collect reward and move to exit
+        player.setPosition(reward.getPosition());
+        game.resolveCollisions();
+        player.setPosition(map.getExitPoint());
+        
+        // Tick should detect win and call end()
+        assertFalse(game.isGameOver(), "Game should not be over before tick");
+        game.tick(Direction.NONE);
+        assertTrue(game.isGameOver(), "Game should end after tick detects win");
+    }
+    
+    @Test
+    void testTick_LoseCondition_CallsEnd() {
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .build();
+        
+        game.start();
+        
+        // Make player die
+        player.setAlive(false);
+        
+        // Tick should detect lose and call end()
+        assertFalse(game.isGameOver(), "Game should not be over before tick");
+        game.tick(Direction.NONE);
+        assertTrue(game.isGameOver(), "Game should end after tick detects lose");
+    }
+    
+    @Test
+    void testTick_UpdateBonusRewards() {
+        BonusReward bonusReward = new BonusReward(new Position(5, 5), 50, 100, 50);
+        
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .addReward(bonusReward)
+            .build();
+        
+        game.start();
+        bonusReward.appear();
+        
+        // Tick should update bonus rewards
+        assertDoesNotThrow(() -> game.tick(Direction.NONE), 
+            "Tick should handle bonus reward updates");
+    }
+    
+    @Test
+    void testTick_ProcessEnemyMovement() {
+        MobileEnemy enemy = new MobileEnemy("enemy", 1, new Position(3, 3), 
+            new AStarPathfinding());
+        
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .addEnemy(enemy)
+            .build();
+        
+        game.start();
+        
+        Position initialEnemyPos = enemy.getPosition();
+        
+        // Tick multiple times to trigger enemy movement (every 21 ticks)
+        for (int i = 0; i < 25; i++) {
+            game.tick(Direction.NONE);
+        }
+        
+        // Enemy should have moved (position may change)
+        // Just verify tick doesn't crash with enemy movement
+        assertNotNull(enemy.getPosition(), "Enemy should still have a position");
+    }
+    
+    @Test
+    void testTick_ProcessEnemyMovement_NoPathfinder() {
+        // Create MobileEnemy without pathfinder
+        MobileEnemy enemy = new MobileEnemy("enemy", 1, new Position(3, 3), null);
+        
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .addEnemy(enemy)
+            .build();
+        
+        game.start();
+        
+        // Tick multiple times to trigger enemy movement
+        for (int i = 0; i < 25; i++) {
+            game.tick(Direction.NONE);
+        }
+        
+        // Should handle enemies without pathfinder
+        assertNotNull(enemy.getPosition(), "Enemy should still have a position");
+    }
+    
+    @Test
+    void testSetHUD() {
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .build();
+        
+        // Create a mock HUD (we can't easily test JavaFX components, but we can test the setter)
+        // For now, just verify the method doesn't throw
+        assertDoesNotThrow(() -> game.setHUD(null), 
+            "setHUD should accept null");
+    }
+    
+    @Test
+    void testResetTimeStamp() {
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .build();
+        
+        game.start();
+        
+        // Call resetTimeStamp
+        assertDoesNotThrow(() -> game.resetTimeStamp(), 
+            "resetTimeStamp should not throw");
+        
+        // Verify elapsed time still works after reset
+        game.tick(Direction.NONE);
+        assertNotNull(game.getElapsedTime(), "Elapsed time should still be accessible");
+    }
+    
+    @Test
+    void testShouldRespawn() {
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .build();
+        
+        BasicReward reward = new BasicReward(new Position(2, 2), 10);
+        
+        // Test shouldRespawn method
+        boolean result = game.shouldRespawn(reward);
+        assertEquals(reward.isRespawnable(), result, 
+            "shouldRespawn should return reward's respawnable status");
+    }
+    
+    @Test
+    void testBuilder_SetScore() {
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .setScore(100)
+            .build();
+        
+        assertEquals(100, game.getScore(), "Builder should set initial score");
+    }
+    
+    @Test
+    void testBuilder_Validation_NoMap() {
+        assertThrows(IllegalStateException.class, () -> {
+            Game.builder()
+                .setPlayer(player)
+                .build();
+        }, "Builder should throw when map is missing");
+    }
+    
+    @Test
+    void testBuilder_Validation_NoPlayer() {
+        assertThrows(IllegalStateException.class, () -> {
+            Game.builder()
+                .setMap(map)
+                .build();
+        }, "Builder should throw when player is missing");
+    }
+    
+    @Test
+    void testTick_WithHUD() {
+        // Test that tick works when HUD is set (even if null, it should not crash)
+        game = Game.builder()
+            .setMap(map)
+            .setPlayer(player)
+            .build();
+        
+        game.start();
+        game.setHUD(null); // Set to null to test the null check
+        
+        // Should not throw when HUD is null
+        assertDoesNotThrow(() -> game.tick(Direction.NONE), 
+            "Tick should handle null HUD gracefully");
     }
 }
