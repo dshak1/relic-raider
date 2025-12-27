@@ -1,12 +1,11 @@
+Java based 2D Game
 Group Project for CMPT 276 Intro to Software Engineering
 
 
-**Tech Stack:** Java | Maven | Object-Oriented Design
-
-
-A Java-based adventure game developed for CMPT 276.
-
-## Demo
+**Tech Stack:** 
+- Java
+- Mave
+- javaFX
 
 ![Relic Raider Demo](demo.png)
 
