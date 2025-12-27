@@ -15,6 +15,10 @@
 
 A Java-based adventure game developed for CMPT 276.
 
+## Demo
+
+![Relic Raider Demo](demo.png)
+
 ## Team Members
 * Lex Camplin
 * Sydney Komanac
