@@ -1,17 +1,8 @@
-# Relic Raider
+Group Project for CMPT 276 Intro to Software Engineering
 
-```
-   _____      _ _      _     _____       _
-  |  __ \    (_) |    | |   |  __ \     (_)
-  | |__) |___ _| | ___| |_  | |__) |__ _ _ __ ___ ___
-  |  _  // _ \ | |/ _ \ __| |  _  // _ \ | '_ \ / _ \
-  | | \ \  __/ | |  __/ |_  | | \ \  __/ | | | |  __/
-  |_|  \_\___|_|_|\___|\__| |_|  \_\___|_|_| |_|\___|
-```
 
 **Tech Stack:** Java | Maven | Object-Oriented Design
 
----
 
 A Java-based adventure game developed for CMPT 276.
 
